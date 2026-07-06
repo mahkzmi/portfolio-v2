@@ -10,13 +10,264 @@
 
   <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
   <!-- Google Font: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
   <!-- Custom CSS -->
-<link rel="stylesheet" href="assets/css/style.css">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/Group 1.png">
+  <style>
+    /* ── reset & base ── */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #ffffff;
+      color: #1e1e1e;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 1200px; }
+
+    /* ── navbar ── */
+    .navbar {
+      padding: 0.8rem 0;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.01em;
+      color: #1e1e1e;
+    }
+    .navbar-brand:hover { color: #1e1e1e; }
+    .nav-link {
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: #3a3a3a;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
+    .nav-link:hover { color: #000; background: #f5f5f5; }
+    .navbar .btn-primary {
+      background: #1e1e1e;
+      border: none;
+      border-radius: 60px;
+      padding: 0.5rem 1.6rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    .navbar .btn-primary:hover { background: #333; }
+
+    /* ── typography ── */
+    h1, h2, h3, .display-5 { font-weight: 700; letter-spacing: -0.02em; }
+    .display-5 { font-weight: 800; }
+
+    /* ── hero ── */
+    .hero {
+      padding: 4rem 0 5rem;
+      background: #ffffff;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: #f0f2f5;
+      padding: 0.4rem 1rem;
+      border-radius: 60px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: #1e1e1e;
+    }
+    .hero-title {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+    .hero-description {
+      font-size: 1.1rem;
+      color: #2e3a4a;
+      max-width: 90%;
+    }
+    .hero-buttons .btn {
+      border-radius: 60px;
+      padding: 0.7rem 2rem;
+      font-weight: 500;
+    }
+    .btn-dark {
+      background: #1e1e1e;
+      border: none;
+    }
+    .btn-dark:hover { background: #333; }
+    .btn-outline-dark {
+      border-color: #d0d4da;
+      color: #1e1e1e;
+    }
+    .btn-outline-dark:hover {
+      background: #1e1e1e;
+      color: #fff;
+      border-color: #1e1e1e;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+    }
+    .hero-stats .stat-item h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.1rem;
+    }
+    .hero-stats .stat-item span {
+      color: #6b7a8f;
+      font-size: 0.85rem;
+    }
+
+    /* ── terminal card ── */
+    .terminal-card {
+      background: #1a1e24;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+      border: 1px solid #eef1f5;
+    }
+    .terminal-header {
+      background: #23282e;
+      padding: 0.8rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .terminal-dots {
+      display: flex;
+      gap: 0.4rem;
+    }
+    .terminal-dots .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 60px;
+      display: inline-block;
+    }
+    .dot.red { background: #ff5f56; }
+    .dot.yellow { background: #ffbd2e; }
+    .dot.green { background: #27c93f; }
+    .terminal-name {
+      color: #8e9aaf;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-left: 0.5rem;
+    }
+    .terminal-body {
+      padding: 1.2rem 1.5rem;
+      background: #1a1e24;
+    }
+    .terminal-body pre {
+      margin: 0;
+      color: #e4e9f0;
+      font-family: 'Inter', monospace;
+      font-size: 0.85rem;
+      line-height: 1.8;
+      white-space: pre-wrap;
+    }
+    .terminal-body .prompt { color: #6fcb7c; }
+    .terminal-body .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background: #e4e9f0;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .focus-card {
+      background: #fafbfc;
+      border-radius: 20px;
+      padding: 1.5rem 1.8rem;
+      border: 1px solid #edf0f5;
+    }
+    .focus-card h5 { font-weight: 600; margin-bottom: 0.3rem; }
+    .focus-card p { color: #4a5a6e; margin: 0; font-size: 0.95rem; }
+
+    /* ── cards ── */
+    .card {
+      border: none;
+      border-radius: 24px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.02);
+      background: #ffffff;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.06); }
+    .badge-soft {
+      background: #f0f2f5;
+      color: #1e1e1e;
+      font-weight: 500;
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+    }
+    .bg-soft-white { background: #fafbfc; }
+    .chip {
+      background: #f0f2f5;
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+      font-weight: 500;
+      font-size: 0.8rem;
+      display: inline-block;
+    }
+
+    /* ── about ── */
+    .about-image img {
+      width: 100%;
+      border-radius: 28px;
+      border: 1px solid #edf0f5;
+    }
+    .about-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .info-card {
+      background: #fafbfc;
+      padding: 1rem 1.2rem;
+      border-radius: 20px;
+      border: 1px solid #edf0f5;
+    }
+    .info-card i { font-size: 1.4rem; margin-bottom: 0.2rem; display: block; }
+    .info-card h6 { font-weight: 600; margin-bottom: 0.1rem; font-size: 0.9rem; }
+    .info-card p { color: #4a5a6e; font-size: 0.85rem; margin: 0; }
+
+    /* ── writing ── */
+    .article-card {
+      background: #fafbfc;
+      border-radius: 24px;
+      padding: 1.8rem;
+      border: 1px solid #edf0f5;
+      transition: 0.2s;
+    }
+    .article-card:hover { background: #ffffff; box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
+    .article-date { color: #6b7a8f; font-size: 0.8rem; font-weight: 500; }
+    .article-title { font-size: 1.2rem; font-weight: 600; margin: 0.4rem 0; }
+    .article-link { color: #1e1e1e; font-weight: 500; text-decoration: none; }
+    .article-link:hover { text-decoration: underline; }
+
+    /* ── footer ── */
+    .footer {
+      padding: 3rem 0 2rem;
+      border-top: 1px solid #edf0f5;
+      color: #5a6478;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 768px) {
+      .hero-title { font-size: 2rem; }
+      .hero-description { max-width: 100%; }
+      .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+    }
+  </style>
 </head>
 <body>
 
@@ -34,8 +285,7 @@
           <li class="nav-item mx-lg-2"><a class="nav-link px-3 px-lg-2" href="/now.html">Now</a></li>
           <li class="nav-item mx-lg-2"><a class="nav-link px-3 px-lg-2" href="#about">About</a></li>
           <li class="nav-item mx-lg-2"><a class="nav-link px-3 px-lg-2" href="#contact">Contact</a></li>
-          <li class="nav-item mx-lg-2"><a class="nav-link px-3 px-lg-2" href="#resume">Resume</a></li>
-
+          <li class="nav-item mx-lg-2"><a class="nav-link px-3 px-lg-2" href="coming_soon.html">Resume</a></li>
           <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
             <a href="#contact" class="btn btn-primary w-100 w-lg-auto px-4">Let's Talk</a>
           </li>
@@ -44,141 +294,60 @@
     </div>
   </nav>
 
-<!-- ================= HERO v2 ================= -->
-
-<section id="home" class="hero d-flex align-items-center">
-
+  <!-- ================= HERO ================= -->
+  <section id="home" class="hero d-flex align-items-center">
     <div class="container">
-
-        <div class="row align-items-center gy-5">
-
-            <!-- ================= LEFT ================= -->
-
-            <div class="col-lg-7">
-
-                <span class="hero-badge">
-
-                    ● OPEN TO WORK • AVAILABLE FOR FREELANCE
-
-                </span>
-
-                <h1 class="hero-title mt-4">
-
-                    Building backend systems
-                    <br>
-                    for the next generation
-                    <br>
-                    of AI applications.
-
-                </h1>
-
-                <p class="hero-description mt-4">
-
-                    I'm <strong>Mahdieh Kazemi</strong>, a Python Backend Engineer
-                    with an academic background in Agriculture.
-
-                    I build scalable APIs, AI-powered applications,
-                    and backend systems focused on performance,
-                    reliability, and real-world impact.
-
-                </p>
-
-                <!-- CTA -->
-
-                <div class="hero-buttons mt-5">
-
-                    <a href="#projects"
-                        class="btn btn-dark btn-lg">
-
-                        View Projects
-
-                    </a>
-
-                    <a href="#contact"
-                        class="btn btn-outline-dark btn-lg">
-
-                        Hire Me
-
-                    </a>
-
-                </div>
-
-                <!-- Quick Stats -->
-
-                <div class="hero-stats mt-5">
-
-                    <div class="stat-item">
-
-                        <h3>3+</h3>
-
-                        <span>
-
-                            Public Projects
-
-                        </span>
-
-                    </div>
-
-                    <div class="stat-item">
-
-                        <h3>Python</h3>
-
-                        <span>
-
-                            Primary Language
-
-                        </span>
-
-                    </div>
-
-                    <div class="stat-item">
-
-                        <h3>AI</h3>
-
-                        <span>
-
-                            Current Focus
-
-                        </span>
-
-                    </div>
-
-                </div>
-
+      <div class="row align-items-center gy-5">
+        <!-- LEFT -->
+        <div class="col-lg-7">
+          <span class="hero-badge">● OPEN TO WORK • AVAILABLE FOR FREELANCE</span>
+          <h1 class="hero-title mt-4">
+            Building backend systems
+            <br>
+            for the next generation
+            <br>
+            of AI applications.
+          </h1>
+          <p class="hero-description mt-4">
+            I'm <strong>Mahdieh Kazemi</strong>, a Python Backend Engineer
+            with an academic background in Agriculture.
+            I build scalable APIs, AI-powered applications,
+            and backend systems focused on performance,
+            reliability, and real-world impact.
+          </p>
+          <!-- CTA -->
+          <div class="hero-buttons mt-5">
+            <a href="#projects" class="btn btn-dark btn-lg">View Projects</a>
+            <a href="#contact" class="btn btn-outline-dark btn-lg">Hire Me</a>
+          </div>
+          <!-- Quick Stats -->
+          <div class="hero-stats mt-5">
+            <div class="stat-item">
+              <h3>3+</h3>
+              <span>Public Projects</span>
             </div>
-
-            <!-- ================= RIGHT ================= -->
-
-            <div class="col-lg-5">
-
-                <div class="terminal-card">
-
-                    <!-- Header -->
-
-                    <div class="terminal-header">
-
-                        <div class="terminal-dots">
-
-                            <span class="dot red"></span>
-
-                            <span class="dot yellow"></span>
-
-                            <span class="dot green"></span>
-
-                        </div>
-
-                        <div class="terminal-name">
-
-                            terminal
-
-                        </div>
-
-                    </div>
-
-                    <!-- Body -->
-
-                    <div class="terminal-body">
-
+            <div class="stat-item">
+              <h3>Python</h3>
+              <span>Primary Language</span>
+            </div>
+            <div class="stat-item">
+              <h3>AI</h3>
+              <span>Current Focus</span>
+            </div>
+          </div>
+        </div>
+        <!-- RIGHT -->
+        <div class="col-lg-5">
+          <div class="terminal-card">
+            <div class="terminal-header">
+              <div class="terminal-dots">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="terminal-name">terminal</div>
+            </div>
+            <div class="terminal-body">
 <pre><code><span class="prompt">$</span> whoami
 
 Mahdieh Kazemi
@@ -198,13 +367,9 @@ Intermediate Machine Learning
 Current Stack
 ────────────────────
 ✓ Python
-
 ✓ FastAPI
-
 ✓ Django
-
 ✓ PostgreSQL
-
 ✓ Machine Learning
 
 Status
@@ -213,61 +378,43 @@ Status
 
 <span class="prompt">$</span> <span class="cursor">|</span>
 </code></pre>
-
-                    </div>
-
-                </div>
-
-                <!-- Small Card -->
-
-                <div class="focus-card mt-4">
-
-                    <h5>
-
-                        Current Mission
-
-                    </h5>
-
-                    <p>
-
-                        Building production-ready AI backend
-                        projects, growing in public, and becoming
-                        a world-class Backend Engineer.
-
-                    </p>
-
-                </div>
-
             </div>
-
+          </div>
+          <div class="focus-card mt-4">
+            <h5>Current Mission</h5>
+            <p>Building production-ready AI backend projects, growing in public, and becoming a world-class Backend Engineer.</p>
+          </div>
         </div>
-
+      </div>
     </div>
-
-</section>
+  </section>
 
   <!-- ===== PROJECTS ===== -->
   <section id="projects" class="py-4 py-md-5">
     <div class="container">
       <div class="text-center mb-4 mb-md-5">
-        <span class="badge text-bg-light border mb-3 px-3 py-2 d-inline-block">Portfolio</span>
-        <h2 class="fw-bold display-5">Selected Projects</h2>
+        <span class="badge-soft border mb-3 px-3 py-2 d-inline-block">Portfolio</span>
+        <h2 class="display-5 fw-bold">Selected Projects</h2>
         <p class="text-secondary col-lg-7 mx-auto px-3">A collection of backend systems, AI applications, and machine learning projects built to solve practical real-world problems.</p>
       </div>
       <div class="row g-3 g-md-4">
         <div class="col-md-6 col-lg-4">
           <div class="card h-100 border-0 shadow-sm rounded-4">
             <div class="card-body p-3 p-md-4">
-              <span class="badge bg-success-subtle text-success mb-3 d-inline-block">Live Project</span>
-              <h3 class="h4 fw-bold mb-3">Varia Carbon</h3>
-              <p class="text-secondary mb-4">AI-powered carbon estimation platform for agricultural applications.</p>
-              <div class="mb-4 d-flex flex-wrap gap-2">
-                <span class="badge text-bg-light border">Python</span>
-                <span class="badge text-bg-light border">Streamlit</span>
-                <span class="badge text-bg-light border">AI</span>
+              <span class="badge bg-success-subtle text-success mb-3 d-inline-block">Prototype</span>
+              <div class="project-image">
+                <img src="assets/images/projects/moodlens-cover.png" alt="MoodLens AI" class="img-fluid rounded-3">
               </div>
-              <a href="/projects/varia-carbon.html" target="_blank" class="text-decoration-none fw-normal">View CaseStudy</a><br>
-              <a href="https://varia-carbon.streamlit.run" target="_blank" class="text-decoration-none fw-semibold">View Project →</a>
+              <a href="moodlens.html"><h3 class="h4 fw-bold mb-3 mt-2">Moodlens AI</h3></a>
+              <p class="text-secondary mb-4">A machine learning web application that analyzes emotional tone from text and predicts sentiment using NLP techniques.</p>
+              <div class="mb-4 d-flex flex-wrap gap-2">
+                <span class="chip">Python</span>
+                <span class="chip">Scikit-learn</span>
+                <span class="chip">Streamlit</span>
+                <span class="chip">Pandas</span>
+                <span class="chip">NLP</span>
+              </div>
+              <a href="https://github.com/mahkzmi/MoodLensAI.git" class="btn btn-outline-dark">View Project on Github</a>
             </div>
           </div>
         </div>
@@ -278,11 +425,11 @@ Status
               <h3 class="h4 fw-bold mb-3">AI PDF Chat</h3>
               <p class="text-secondary mb-4">Chat with PDFs using Retrieval-Augmented Generation (RAG).</p>
               <div class="mb-4 d-flex flex-wrap gap-2">
-                <span class="badge text-bg-light border">FastAPI</span>
-                <span class="badge text-bg-light border">LangChain</span>
-                <span class="badge text-bg-light border">RAG</span>
+                <span class="chip">FastAPI</span>
+                <span class="chip">LangChain</span>
+                <span class="chip">RAG</span>
               </div>
-              <span class="fw-semibold text-secondary">Coming Soon</span>
+              <a href="ai-pdf-chat.html" class="btn btn-outline-dark">View Page</a>
             </div>
           </div>
         </div>
@@ -293,11 +440,11 @@ Status
               <h3 class="h4 fw-bold mb-3">Machine Learning Lab</h3>
               <p class="text-secondary mb-4">Practical ML projects, Kaggle notebooks, and experiments.</p>
               <div class="mb-4 d-flex flex-wrap gap-2">
-                <span class="badge text-bg-light border">Python</span>
-                <span class="badge text-bg-light border">Scikit-learn</span>
-                <span class="badge text-bg-light border">Kaggle</span>
+                <span class="chip">Python</span>
+                <span class="chip">Scikit-learn</span>
+                <span class="chip">Kaggle</span>
               </div>
-              <span class="fw-semibold text-secondary">Updating Weekly</span>
+              <a href="ml-lab.html" class="btn btn-outline-dark">View Page</a>
             </div>
           </div>
         </div>
@@ -306,11 +453,11 @@ Status
   </section>
 
   <!-- ===== TECH STACK ===== -->
-  <section id="stack" class="py-4 py-md-5 bg-light">
+  <section id="stack" class="py-4 py-md-5 bg-soft-white">
     <div class="container">
       <div class="text-center mb-4 mb-md-5">
-        <span class="badge text-bg-light border mb-3 px-3 py-2 d-inline-block">Technologies</span>
-        <h2 class="fw-bold display-5">My Tech Stack</h2>
+        <span class="badge-soft border mb-3 px-3 py-2 d-inline-block">Technologies</span>
+        <a href="uses.html"><h2 class="display-5 fw-bold">Tech Stack</h2></a>
         <p class="text-secondary col-lg-7 mx-auto px-3">Technologies I use to build modern backend systems, APIs, and AI-powered applications.</p>
       </div>
       <div class="row g-2 g-md-3 g-lg-4 text-center">
@@ -366,118 +513,68 @@ Status
     </div>
   </section>
 
- <!-- ================= ABOUT ================= -->
-
-<section id="about">
-
+  <!-- ===== ABOUT ===== -->
+  <section id="about" class="py-5">
     <div class="container">
-
-        <div class="row align-items-center gy-5">
-
-            <!-- Photo -->
-
-            <div class="col-lg-5">
-
-                <div class="about-image">
-
-                    <img src="assets/images/hero-profile.png"
-                         alt="Mahdieh Kazemi">
-
-                </div>
-
-            </div>
-
-            <!-- Content -->
-
-            <div class="col-lg-7">
-
-                <span class="hero-badge">
-
-                    About Me
-
-                </span>
-
-                <h2 class="mt-4 mb-4">
-
-                    Building software that solves
-                    real-world problems.
-
-                </h2>
-
-                <p>
-
-                    I'm Mahdieh Kazemi, a Python Backend Engineer with an academic
-                    background in Agriculture. My current focus is building AI-powered
-                    backend applications, scalable APIs, and machine learning projects.
-
-                </p>
-
-                <p>
-
-                    I enjoy combining software engineering with environmental
-                    technology and continuously sharing my learning journey through
-                    technical content and open-source projects.
-
-                </p>
-
-            </div>
-
+      <div class="row align-items-center gy-5">
+        <div class="col-lg-5">
+          <div class="about-image">
+            <img src="assets/images/hero-profile.png" alt="Mahdieh Kazemi">
+          </div>
         </div>
-
-    </div>
-
-</section>
-  <!-- ===== WRITING ===== -->
-  <section id="writing" class="py-4 py-md-5 bg-light">
-    <div class="container">
-      <div class="px-3">
-        <h2 class="fw-bold mb-3 mb-md-4">Writing</h2>
-        <p class="text-secondary">Articles, engineering notes, machine learning learnings, and lessons from building software.</p>
-        <div class="alert alert-light border rounded-4 mt-4">First article coming soon...</div>
+        <div class="col-lg-7">
+          <span class="hero-badge">About Me</span>
+          <h2 class="mt-4 mb-4 display-5 fw-bold">From Agriculture to AI Backend Engineering.</h2>
+          <p>I'm Mahdieh Kazemi, a Python Backend Engineer with an academic background in Land Resources Management. My work sits at the intersection of software engineering, artificial intelligence, and environmental technology.</p>
+          <p>I'm currently focused on building scalable backend systems, AI-powered applications, and machine learning projects while documenting my journey publicly through technical content.</p>
+          <p>My long-term vision is to create technology that solves practical problems and bridges the gap between AI and agriculture.</p>
+          <div class="about-info">
+            <div class="info-card">
+              <i class="bi bi-geo-alt"></i>
+              <h6>Based In</h6>
+              <p>Karaj, Iran</p>
+            </div>
+            <div class="info-card">
+              <i class="bi bi-cpu"></i>
+              <h6>Focus</h6>
+              <p>Python Backend & AI</p>
+            </div>
+            <div class="info-card">
+              <i class="bi bi-mortarboard"></i>
+              <h6>Education</h6>
+              <p>M.Sc. Land Resources</p>
+            </div>
+            <div class="info-card">
+              <i class="bi bi-tree"></i>
+              <h6>Founder</h6>
+              <p>Varia AgTech Studio</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== SECONDARY HERO ===== -->
-  <section class="hero d-flex align-items-center py-4 py-md-5">
+  <!-- ===== WRITING ===== -->
+  <section id="writing" class="py-5 bg-soft-white">
     <div class="container">
-      <div class="row align-items-center g-4 g-lg-5">
-        <div class="col-lg-7">
-          <span class="badge rounded-pill text-bg-light border px-3 py-2 mb-3 mb-md-4 d-inline-block">AI Backend Engineer • Python Developer</span>
-          <h1 class="display-4 display-md-3 fw-bold mb-3 mb-md-4">Building reliable AI-powered backend systems.</h1>
-          <p class="lead text-secondary mb-4 mb-md-5">I help transform ideas into scalable backend applications using Python, FastAPI, Django, PostgreSQL, and modern machine learning technologies.</p>
-          <div class="d-flex flex-wrap gap-3">
-            <a href="#projects" class="btn btn-primary btn-lg px-4">View My Work</a>
-            <a href="#contact" class="btn btn-outline-dark btn-lg px-4">Get In Touch</a>
+      <h2 class="display-5 fw-bold">Writing</h2>
+      <p class="mb-5">Notes, thoughts, and technical breakdowns from my journey in AI and backend development.</p>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="article-card">
+            <div class="article-date">Coming Soon</div>
+            <h3 class="article-title">Building ML projects from scratch</h3>
+            <p>How I approach machine learning projects as a backend engineer.</p>
+            <a href="#" class="article-link">Read more →</a>
           </div>
         </div>
-        <div class="col-lg-5">
-          <div class="card border-0 shadow rounded-4">
-            <div class="card-body p-3 p-md-4">
-              <div class="text-center mb-3">
-                <img 
-                  src="images/profile-placeholder.jpg" 
-                  alt="Mahdieh Kazemi" 
-                  class="rounded-circle shadow-sm" 
-                  style="width: 80px; height: 80px; object-fit: cover; border: 3px solid white;"
-                  onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'width:80px;height:80px;border-radius:50%;background:#e8ecf0;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:2rem;\'>📷</div>';"
-                />
-              </div>
-              <div class="d-flex align-items-center mb-3 flex-wrap">
-                <span class="badge bg-success me-2">● Online</span>
-                <small class="text-secondary">Currently Building</small>
-              </div>
-              <h4 class="fw-bold mb-3">Varia Carbon</h4>
-              <p class="text-secondary">AI-powered agricultural carbon estimation platform combining environmental knowledge with software engineering.</p>
-              <hr>
-              <div class="mb-3"><strong>Current Focus</strong></div>
-              <ul class="list-unstyled">
-                <li class="mb-2">✓ AI Backend Engineering</li>
-                <li class="mb-2">✓ Machine Learning</li>
-                <li class="mb-2">✓ FastAPI & Django</li>
-                <li>✓ Building Public Projects</li>
-              </ul>
-            </div>
+        <div class="col-md-6">
+          <div class="article-card">
+            <div class="article-date">Coming Soon</div>
+            <h3 class="article-title">From Agriculture to AI Engineering</h3>
+            <p>My transition story from soil science to machine learning.</p>
+            <a href="#" class="article-link">Read more →</a>
           </div>
         </div>
       </div>
@@ -485,17 +582,17 @@ Status
   </section>
 
   <!-- ===== CONTACT ===== -->
-  <section id="contact" class="py-4 py-md-5">
+  <section id="contact" class="py-5">
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-lg-8 text-center px-3">
-          <span class="badge text-bg-light border px-3 py-2 mb-3 d-inline-block">Let's Connect</span>
+          <span class="badge-soft border px-3 py-2 mb-3 d-inline-block">Let's Connect</span>
           <h2 class="display-5 fw-bold mb-3 mb-md-4">Let's build something meaningful together.</h2>
           <p class="lead text-secondary mb-4 mb-md-5">Whether you're building an AI-powered product, need a backend engineer, or simply want to connect, I'd love to hear from you.</p>
           <div class="d-flex justify-content-center flex-wrap gap-3 mb-5">
-            <a href="mailto:YOUR_EMAIL" class="btn btn-primary btn-lg px-4">Email Me</a>
-            <a href="https://linkedin.com/in/YOUR_USERNAME" target="_blank" class="btn btn-outline-dark btn-lg px-4">LinkedIn</a>
-            <a href="https://github.com/YOUR_USERNAME" target="_blank" class="btn btn-outline-dark btn-lg px-4">GitHub</a>
+            <a href="mailto:mah_kzmi21@gmail.com" class="btn btn-dark btn-lg px-4">Email Me</a>
+            <a href="https://www.linkedin.com/in/mahdieh-kazemi-505bab319?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" class="btn btn-outline-dark btn-lg px-4">LinkedIn</a>
+            <a href="https://github.com/mahkzmi" target="_blank" class="btn btn-outline-dark btn-lg px-4">GitHub</a>
           </div>
         </div>
       </div>
@@ -503,7 +600,7 @@ Status
   </section>
 
   <!-- ===== FOOTER ===== -->
-  <footer class="border-top py-4 py-md-5">
+  <footer class="footer">
     <div class="container">
       <div class="row align-items-center g-3">
         <div class="col-lg-6 text-center text-lg-start">
@@ -511,13 +608,6 @@ Status
           <p class="text-secondary mb-0 small">AI Backend Engineer • Python Developer</p>
         </div>
         <div class="col-lg-6 text-center text-lg-end mt-3 mt-lg-0">
-          <div class="d-flex flex-wrap justify-content-center justify-content-lg-end gap-2 gap-md-3">
-            <a href="#" class="text-decoration-none text-secondary">Home</a>
-            <a href="#projects" class="text-decoration-none text-secondary">Projects</a>
-            <a href="#about" class="text-decoration-none text-secondary">About</a>
-            <a href="#writing" class="text-decoration-none text-secondary">Writing</a>
-            <a href="#contact" class="text-decoration-none text-secondary">Contact</a>
-          </div>
         </div>
       </div>
       <hr class="my-3 my-md-4">

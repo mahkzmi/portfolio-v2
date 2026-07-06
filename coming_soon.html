@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mahdieh Kazemi · Now</title>
-  <meta name="description" content="What Mahdieh Kazemi is currently focusing on — building, learning, and working on." />
-  <meta name="keywords" content="Python, FastAPI, Django, Machine Learning, AI, Backend Developer, PostgreSQL" />
+  <title>Coming Soon · Mahdieh Kazemi</title>
+  <meta name="description" content="Something new is on the way. Stay tuned for upcoming projects from Mahdieh Kazemi." />
   <meta name="author" content="Mahdieh Kazemi" />
 
   <!-- Bootstrap 5 -->
@@ -24,6 +23,9 @@
       color: #1e1e1e;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
     .container { max-width: 1200px; }
 
@@ -60,13 +62,19 @@
     }
     .navbar .btn-primary:hover { background: #333; }
 
-    /* ── typography ── */
-    h1, h2, h3, .display-4 { font-weight: 700; letter-spacing: -0.02em; }
-    .display-4 { font-weight: 800; }
-    .text-muted-soft { color: #6b7a8f; }
-
-    /* ── badges & cards ── */
-    .badge-soft {
+    /* ── hero / coming soon ── */
+    .coming-soon {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 4rem 0;
+    }
+    .coming-soon .display-1 {
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      font-size: 6rem;
+    }
+    .coming-soon .badge-soft {
       background: #f0f2f5;
       color: #1e1e1e;
       font-weight: 500;
@@ -74,47 +82,31 @@
       border-radius: 40px;
       font-size: 0.8rem;
     }
-    .bg-soft-white { background: #fafbfc; }
-
-    /* ── now page specific ── */
-    .now-section {
-      max-width: 850px;
-      margin: 0 auto;
-    }
-    .now-section hr {
-      opacity: 0.25;
-      margin: 2.8rem 0;
-    }
-    .now-section ul {
-      list-style: none;
-      padding-left: 0;
-    }
-    .now-section ul li {
-      padding: 0.4rem 0;
-      padding-left: 1.5rem;
-      position: relative;
-    }
-    .now-section ul li::before {
-      content: "▹";
-      position: absolute;
-      left: 0;
-      color: #1e1e1e;
-      font-weight: 600;
-    }
-    .now-section blockquote {
-      border-left: 4px solid #1e1e1e;
-      padding-left: 1.8rem;
-    }
-    .now-section blockquote p {
+    .coming-soon .lead {
+      color: #4a5a6e;
       font-size: 1.25rem;
-      font-weight: 500;
+    }
+    .coming-soon .icon-large {
+      font-size: 4rem;
       color: #1e1e1e;
-      margin-bottom: 0;
+      opacity: 0.15;
+    }
+    .coming-soon .btn-outline-dark {
+      border-radius: 60px;
+      padding: 0.7rem 2rem;
+      font-weight: 500;
+      border-color: #d0d4da;
+      color: #1e1e1e;
+    }
+    .coming-soon .btn-outline-dark:hover {
+      background: #1e1e1e;
+      color: #fff;
+      border-color: #1e1e1e;
     }
 
     /* ── footer ── */
     .footer {
-      padding: 3rem 0 2rem;
+      padding: 2.5rem 0 2rem;
       border-top: 1px solid #edf0f5;
       color: #5a6478;
       font-size: 0.95rem;
@@ -128,7 +120,8 @@
     .footer a:hover { color: #000; }
 
     @media (max-width: 768px) {
-      .display-4 { font-size: 2.4rem; }
+      .coming-soon .display-1 { font-size: 3.5rem; }
+      .coming-soon .icon-large { font-size: 2.8rem; }
     }
   </style>
 </head>
@@ -156,69 +149,33 @@
     </div>
   </nav>
 
-  <!-- ================= NOW PAGE ================= -->
-  <section class="py-5">
-    <div class="container now-section">
-      <span class="badge-soft border px-3 py-2 mb-4 d-inline-block">/now</span>
-      <h1 class="display-4 fw-bold mb-4">What I'm focusing on right now.</h1>
-      <p class="lead text-muted-soft mb-5">This page is a snapshot of what I'm currently building, learning, and improving. Updated whenever my priorities change.</p>
-
-      <hr>
-
-      <!-- Building -->
-      <h2 class="fw-bold mb-3">Building</h2>
-      <p class="text-muted-soft">I'm currently building my personal brand as an AI Backend Engineer while creating production-ready portfolio projects that demonstrate practical problem solving.</p>
-      <ul class="mt-4">
-        <li>Developing AI-powered backend applications.</li>
-        <li>Improving my portfolio website.</li>
-        <li>Publishing technical content on LinkedIn.</li>
-        <li>Growing my GitHub with real-world projects.</li>
-      </ul>
-
-      <hr>
-
-      <!-- Learning -->
-      <h2 class="fw-bold mb-3">Learning</h2>
-      <p class="text-muted-soft">Continuous learning is a core part of my workflow.</p>
-      <ul class="mt-4">
-        <li>Intermediate Machine Learning — Kaggle.</li>
-        <li>Backend Architecture & System Design.</li>
-        <li>LLMs and AI Application Development.</li>
-        <li>Docker & Deployment.</li>
-      </ul>
-
-      <hr>
-
-      <!-- Current Projects -->
-      <h2 class="fw-bold mb-3">Current Projects</h2>
-      <ul class="mt-4">
-        <li>🌱 Varia Carbon</li>
-        <li>📄 AI PDF Chat</li>
-        <li>🤖 Machine Learning Portfolio</li>
-        <li>🎓 Master's Thesis</li>
-      </ul>
-
-      <hr>
-
-      <!-- Open To -->
-      <h2 class="fw-bold mb-3">Open To</h2>
-      <p class="text-muted-soft">I'm currently open to freelance projects, backend engineering opportunities, AI collaborations, and interesting technical conversations.</p>
-
-      <hr>
-
-      <!-- Beyond Code -->
-      <h2 class="fw-bold mb-3">Beyond Code</h2>
-      <p class="text-muted-soft">Outside software, I enjoy learning about agriculture, environmental technologies, artificial intelligence, spending time with cats, drinking coffee, and documenting my journey publicly.</p>
-
-      <hr>
-
-      <!-- Philosophy -->
-      <blockquote>
-        <p>Build consistently. Learn continuously. Share generously.</p>
-      </blockquote>
-
-      <div class="mt-5">
-        <small class="text-muted-soft">Last updated: July 2026</small>
+  <!-- ===== COMING SOON ===== -->
+  <section class="coming-soon">
+    <div class="container">
+      <div class="row justify-content-center text-center">
+        <div class="col-lg-8">
+          <div class="mb-4">
+            <span class="badge-soft border px-3 py-2 d-inline-block">🚧 Under Construction</span>
+          </div>
+          <h1 class="display-1 fw-bold mb-3">Coming Soon</h1>
+          <div class="icon-large mb-4">
+            <i class="bi bi-hammer"></i>
+          </div>
+          <p class="lead mb-4">
+            Something new is in the works. I'm building something exciting — check back soon to see what's next.
+          </p>
+          <p class="text-muted-soft mb-5">
+            In the meantime, feel free to explore my other projects or get in touch.
+          </p>
+          <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a href="index.html#projects" class="btn btn-outline-dark">
+              <i class="bi bi-arrow-left me-2"></i>View Projects
+            </a>
+            <a href="index.html#contact" class="btn btn-dark">
+              Get in Touch <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
