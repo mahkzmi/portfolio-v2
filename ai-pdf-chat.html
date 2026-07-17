@@ -1,39 +1,532 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI PDF Chat · Mahdieh Kazemi</title>
+  <meta name="description" content="AI PDF Chat — RAG-powered PDF conversations. A premium case study by Mahdieh Kazemi." />
+  <!-- Open Graph -->
+  <meta property="og:title" content="AI PDF Chat | Mahdieh Kazemi" />
+  <meta property="og:description" content="Chat naturally with your PDF documents using Retrieval-Augmented Generation (RAG), semantic search, and modern LLM workflows." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mahdiehkazemi.com/ai-pdf-chat.html" />
+  <meta property="og:image" content="assets/images/projects/ai-pdf-chat-cover.png" />
+  <!-- Bootstrap + Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── reset & base ── */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #ffffff;
+      color: #1e1e1e;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 1200px; }
 
-<meta charset="UTF-8">
-<title>AI PDF Chat</title>
+    /* ── navbar ── */
+    .navbar {
+      padding: 1.2rem 0;
+      background: rgba(255,255,255,0.80);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .navbar-brand {
+      font-weight: 600;
+      font-size: 1.25rem;
+      letter-spacing: -0.01em;
+      color: #1e1e1e;
+    }
+    .navbar-brand:hover { color: #1e1e1e; }
+    .nav-link {
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: #3a3a3a;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
+    .nav-link:hover { color: #000; background: #f5f5f5; }
 
-<link rel="stylesheet" href="assets/css/style.css">
+    /* ── typography ── */
+    h1, h2, h3, .display-4 { font-weight: 600; letter-spacing: -0.02em; }
+    .display-4 { font-weight: 700; }
+    .section-title {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+      letter-spacing: -0.02em;
+    }
 
+    /* ── cards ── */
+    .card {
+      border: none;
+      border-radius: 24px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.02);
+      background: #ffffff;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.06); }
+    .card-soft {
+      border-radius: 28px;
+      padding: 1.5rem 1.8rem;
+    }
+    .soft-shadow { box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
+    .badge-soft {
+      background: #f0f2f5;
+      color: #1e1e1e;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+    }
+
+    /* ── buttons ── */
+    .btn-outline-dark {
+      border-radius: 60px;
+      padding: 0.6rem 1.6rem;
+      font-weight: 500;
+      border-color: #d0d4da;
+      color: #1e1e1e;
+    }
+    .btn-outline-dark:hover {
+      background: #1e1e1e;
+      color: #fff;
+      border-color: #1e1e1e;
+    }
+    .btn-dark {
+      border-radius: 60px;
+      padding: 0.6rem 1.8rem;
+      font-weight: 500;
+      background: #1e1e1e;
+      border: none;
+    }
+    .btn-dark:hover { background: #333; }
+    .btn-outline-secondary {
+      border-radius: 60px;
+      padding: 0.6rem 1.8rem;
+      border-color: #d0d4da;
+      color: #1e1e1e;
+    }
+    .btn-outline-secondary:hover {
+      background: #f0f2f5;
+      border-color: #b0b8c0;
+    }
+    .btn-primary-soft {
+      background: #1e1e1e;
+      border: none;
+      border-radius: 60px;
+      padding: 0.65rem 2rem;
+      font-weight: 500;
+      color: #fff;
+      transition: 0.2s;
+    }
+    .btn-primary-soft:hover { background: #333; color: #fff; }
+
+    /* ── pipeline / timeline ── */
+    .pipeline-step {
+      background: #f8fafc;
+      border-radius: 40px;
+      padding: 0.9rem 1.6rem;
+      font-weight: 500;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .pipeline-arrow {
+      font-size: 1.8rem;
+      color: #a0aab8;
+      font-weight: 300;
+    }
+
+    /* ── feature cards ── */
+    .feature-card {
+      background: #fafbfc;
+      border-radius: 28px;
+      padding: 1.8rem 1.5rem;
+      height: 100%;
+      border: 1px solid #f0f2f5;
+      transition: 0.15s;
+    }
+    .feature-card:hover {
+      background: #ffffff;
+      border-color: #e6eaef;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+    }
+    .feature-icon {
+      font-size: 2rem;
+      color: #1e1e1e;
+      margin-bottom: 0.75rem;
+    }
+
+    /* ── chips ── */
+    .chip {
+      background: #f0f2f5;
+      padding: 0.45rem 1.2rem;
+      border-radius: 60px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      display: inline-block;
+      margin: 0.2rem;
+    }
+    .chip-light { background: #f5f7fa; }
+
+    /* ── screenshots ── */
+    .screenshot-card {
+      border-radius: 28px;
+      overflow: hidden;
+      background: #f5f7fa;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      aspect-ratio: 16/10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #edf0f5;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .screenshot-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+    }
+    .screenshot-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ── timeline lessons ── */
+    .timeline-item {
+      display: flex;
+      gap: 1.2rem;
+      align-items: flex-start;
+      padding: 0.8rem 0;
+    }
+    .timeline-icon {
+      background: #f0f2f5;
+      border-radius: 60px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    /* ── CTA next project ── */
+    .cta-card {
+      background: #fafbfc;
+      border-radius: 40px;
+      padding: 3rem 2.5rem;
+      border: 1px solid #edf0f5;
+      transition: 0.2s;
+    }
+    .cta-card:hover {
+      background: #ffffff;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.03);
+    }
+
+    /* ── footer ── */
+    .footer {
+      padding: 3rem 0 2rem;
+      border-top: 1px solid #edf0f5;
+      color: #5a6478;
+      font-size: 0.95rem;
+    }
+    .footer a {
+      color: #1e1e1e;
+      text-decoration: none;
+      font-weight: 500;
+      margin: 0 0.5rem;
+    }
+    .footer a:hover { color: #000; }
+
+    /* ── utils ── */
+    .text-muted-soft { color: #6b7a8f; }
+    .bg-soft-white { background: #fafbfc; }
+    .border-radius-24 { border-radius: 24px; }
+    hr.soft-hr { opacity: 0.3; margin: 2.5rem 0; }
+    .cover-placeholder {
+      background: #eef1f5;
+      border-radius: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+      border: 1px solid #e4e8ee;
+    }
+    .cover-placeholder img {
+      width: 100%;
+      height: auto;
+      border-radius: 32px;
+    }
+
+    /* ── fade-up animation ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .display-4 { font-size: 2.4rem; }
+      .section-title { font-size: 1.8rem; }
+      .cta-card { padding: 2rem 1.5rem; }
+    }
+  </style>
 </head>
-
 <body>
 
-<section style="padding:120px 0;text-align:center;">
+<!-- ===== NAVBAR (reused from index) ===== -->
+<nav class="navbar navbar-expand-md sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">Mahdieh Kazemi</a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+            aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="bi bi-list" style="font-size: 1.6rem;"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-md-center">
+        <li class="nav-item"><a class="nav-link" href="index.html#projects">Projects</a></li>
+        <li class="nav-item"><a class="nav-link" href="index.html#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="uses.html">Uses</a></li>
+        <li class="nav-item"><a class="nav-link" href="now.html">Now</a></li>
+        <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
-<div class="container">
-
-<h1>AI PDF Chat</h1>
-
-<p style="margin-top:20px; color:#6b7280; max-width:600px; margin-inline:auto;">
-Upload a PDF and chat with it using Machine Learning and NLP. This project is currently under development.
-</p>
-
-<div style="margin-top:40px;">
-
-<span class="badge" style="background:#f3f4f6;">
-🚧 Coming Soon
-</span>
-
-</div>
-
-</div>
-
+<!-- ===== HERO ===== -->
+<section class="py-5">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="mb-3 d-flex align-items-center gap-2">
+          <span class="badge-soft" style="background: #eaeef3;">In Debugging Phase</span>
+          <span class="badge-soft" style="background: #eaeef3;">Personal Project</span>
+        </div>
+        <h1 class="display-4 fw-bold mb-3" style="letter-spacing: -0.03em;">AI PDF Chat</h1>
+        <p class="fs-4 fw-normal text-muted-soft mb-4" style="max-width: 90%;">Chat naturally with your PDF documents using Retrieval-Augmented Generation (RAG), semantic search, and modern LLM workflows.</p>
+        <p class="mb-4" style="font-size: 1.1rem; color: #2e3a4a;">AI PDF Chat turns static PDFs into interactive knowledge bases. Upload a document, ask questions, and get context‑aware answers powered by a modern RAG pipeline.</p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="https://github.com/mahkzmi/" class="btn btn-dark"><i class="bi bi-github me-2"></i>View on GitHub</a>
+          <a href="index.html#projects" class="btn btn-outline-secondary">Back to Portfolio</a>
+        </div>
+        <!-- quick info cards -->
+        <div class="row g-2 mt-4">
+          <div class="col-6 col-md-3"><div class="card-soft bg-soft-white text-center py-2"><span class="text-muted-soft d-block" style="font-size:0.7rem;">Status</span><strong>Personal Project</strong></div></div>
+          <div class="col-6 col-md-3"><div class="card-soft bg-soft-white text-center py-2"><span class="text-muted-soft d-block" style="font-size:0.7rem;">Version</span><strong>v1</strong></div></div>
+          <div class="col-6 col-md-3"><div class="card-soft bg-soft-white text-center py-2"><span class="text-muted-soft d-block" style="font-size:0.7rem;">Category</span><strong>AI Application</strong></div></div>
+          <div class="col-6 col-md-3"><div class="card-soft bg-soft-white text-center py-2"><span class="text-muted-soft d-block" style="font-size:0.7rem;">Focus</span><strong>RAG</strong></div></div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="cover-placeholder">
+          <img src="assets/images/projects/ai-pdf-chat-cover.png" alt="AI PDF Chat cover" style="width:100%; border-radius:32px;" />
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-</body>
+<!-- ===== OVERVIEW ===== -->
+<section class="py-5">
+  <div class="container">
+    <div class="card card-soft p-4 p-md-5 soft-shadow" style="border-radius: 36px;">
+      <h2 class="section-title">Project Overview</h2>
+      <p class="fs-5" style="max-width: 85%; color: #1e2a36;">Traditional document search is rigid — you can't ask questions or explore context. AI PDF Chat bridges the gap between unstructured PDFs and natural language understanding using Retrieval-Augmented Generation (RAG). It lets users query PDFs conversationally with semantic search, retrieving the most relevant chunks and generating precise, context‑aware answers.</p>
+    </div>
+  </div>
+</section>
 
+<!-- ===== KEY FEATURES ===== -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="section-title text-center mb-5">Key Features</h2>
+    <div class="row g-4">
+      <div class="col-md-4"><div class="feature-card"><div class="feature-icon"><i class="bi bi-upload"></i></div><h5>Upload PDFs</h5><p class="text-muted-soft">Drag‑and‑drop or select PDF files. Instant processing with progress feedback.</p></div></div>
+      <div class="col-md-4"><div class="feature-card"><div class="feature-icon"><i class="bi bi-search"></i></div><h5>Semantic Search</h5><p class="text-muted-soft">Find meaning, not just keywords. Dense vector retrieval powered by Sentence Transformers.</p></div></div>
+      <div class="col-md-4"><div class="feature-card"><div class="feature-icon"><i class="bi bi-chat-dots"></i></div><h5>Natural Language Q&A</h5><p class="text-muted-soft">Ask questions in plain English and receive accurate, cited answers from your document.</p></div></div>
+      <div class="col-md-4"><div class="feature-card"><div class="feature-icon"><i class="bi bi-stack"></i></div><h5>RAG Pipeline</h5><p class="text-muted-soft">Retrieval-Augmented Generation ensures responses are grounded in your PDF content.</p></div></div>
+      <div class="col-md-4"><div class="feature-card"><div class="feature-icon"><i class="bi bi-server"></i></div><h5>Modern Backend</h5><p class="text-muted-soft">FastAPI, LangChain, and FAISS for high‑performance vector search and orchestration.</p></div></div>
+      <div class="col-md-4"><div class="feature-card"><div class="feature-icon"><i class="bi bi-window"></i></div><h5>Clean UI</h5><p class="text-muted-soft">Minimal, Swiss‑inspired interface that puts your document and chat front and center.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HOW IT WORKS (timeline) ===== -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="section-title text-center mb-5">How It Works</h2>
+    <div class="d-flex flex-wrap justify-content-center align-items-center gap-3 gap-md-4">
+      <span class="pipeline-step"><i class="bi bi-file-earmark-pdf me-1"></i>Upload PDF</span>
+      <span class="pipeline-arrow"><i class="bi bi-arrow-down-short d-md-none"></i><i class="bi bi-arrow-right d-none d-md-inline"></i></span>
+      <span class="pipeline-step"><i class="bi bi-file-text me-1"></i>Extract Text</span>
+      <span class="pipeline-arrow"><i class="bi bi-arrow-down-short d-md-none"></i><i class="bi bi-arrow-right d-none d-md-inline"></i></span>
+      <span class="pipeline-step"><i class="bi bi-files me-1"></i>Chunking</span>
+      <span class="pipeline-arrow"><i class="bi bi-arrow-down-short d-md-none"></i><i class="bi bi-arrow-right d-none d-md-inline"></i></span>
+      <span class="pipeline-step"><i class="bi bi-diagram-3 me-1"></i>Embedding</span>
+      <span class="pipeline-arrow"><i class="bi bi-arrow-down-short d-md-none"></i><i class="bi bi-arrow-right d-none d-md-inline"></i></span>
+      <span class="pipeline-step"><i class="bi bi-search-heart me-1"></i>Vector Search</span>
+      <span class="pipeline-arrow"><i class="bi bi-arrow-down-short d-md-none"></i><i class="bi bi-arrow-right d-none d-md-inline"></i></span>
+      <span class="pipeline-step"><i class="bi bi-database me-1"></i>Retrieve Context</span>
+      <span class="pipeline-arrow"><i class="bi bi-arrow-down-short d-md-none"></i><i class="bi bi-arrow-right d-none d-md-inline"></i></span>
+      <span class="pipeline-step"><i class="bi bi-chat-square-text me-1"></i>LLM Response</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TECH STACK ===== -->
+<section class="py-5 bg-soft-white">
+  <div class="container">
+    <h2 class="section-title text-center mb-4">Tech Stack</h2>
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+      <span class="chip chip-light">Python</span><span class="chip chip-light">FastAPI</span>
+      <span class="chip chip-light">LangChain</span><span class="chip chip-light">FAISS</span>
+      <span class="chip chip-light">OpenAI API</span><span class="chip chip-light">PyPDF2</span>
+      <span class="chip chip-light">Sentence Transformers</span><span class="chip chip-light">HTML</span>
+      <span class="chip chip-light">Bootstrap</span><span class="chip chip-light">Git</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROJECT CHALLENGES ===== -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="section-title text-center mb-5">Project Challenges</h2>
+    <div class="row g-4">
+      <div class="col-md-6"><div class="card card-soft h-100"><i class="bi bi-crosshair fs-3 mb-2"></i><h5>Context retrieval</h5><p class="text-muted-soft small"><strong>Challenge:</strong> Retrieving the right chunk size while preserving semantic coherence. <br /><strong>Solution:</strong> Optimized chunk size with overlap and re‑ranking using cross‑encoders.</p></div></div>
+      <div class="col-md-6"><div class="card card-soft h-100"><i class="bi bi-boxes fs-3 mb-2"></i><h5>Embedding quality</h5><p class="text-muted-soft small"><strong>Challenge:</strong> General‑purpose embeddings sometimes miss domain‑specific nuance. <br /><strong>Solution:</strong> Fine‑tuned Sentence‑BERT on a custom dataset of technical PDFs.</p></div></div>
+      <div class="col-md-6"><div class="card card-soft h-100"><i class="bi bi-aspect-ratio fs-3 mb-2"></i><h5>Chunk size</h5><p class="text-muted-soft small"><strong>Challenge:</strong> Too small = loss of context; too large = noise in retrieval. <br /><strong>Solution:</strong> Dynamic chunking based on sentence boundaries and semantic similarity.</p></div></div>
+      <div class="col-md-6"><div class="card card-soft h-100"><i class="bi bi-cloud-upload fs-3 mb-2"></i><h5>Deployment</h5><p class="text-muted-soft small"><strong>Challenge:</strong> Balancing latency and cost for vector search and LLM inference. <br /><strong>Solution:</strong> FAISS index quantization and caching frequent queries.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHAT I LEARNED ===== -->
+<section class="py-5 bg-soft-white">
+  <div class="container">
+    <div class="card card-soft p-4 p-md-5 soft-shadow" style="border-radius: 36px;">
+      <h2 class="section-title mb-4">What I Learned</h2>
+      <div class="timeline-item">
+        <div class="timeline-icon"><i class="bi bi-stack"></i></div>
+        <div><h6>Retrieval-Augmented Generation</h6><p class="text-muted-soft small">RAG is not just about connecting a vector DB to an LLM. It's about careful orchestration, prompt design, and evaluation to reduce hallucinations.</p></div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-icon"><i class="bi bi-pencil-square"></i></div>
+        <div><h6>Prompt Engineering</h6><p class="text-muted-soft small">Crafting prompts that include retrieved context, instruct the model to cite sources, and handle "not found" scenarios gracefully is an art.</p></div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-icon"><i class="bi bi-server"></i></div>
+        <div><h6>Backend Architecture</h6><p class="text-muted-soft small">Building a robust async API with FastAPI, managing state, and streaming responses requires careful design for real‑world usage.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FUTURE IMPROVEMENTS ===== -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="section-title text-center mb-5">Future Improvements</h2>
+    <div class="row g-3 justify-content-center">
+      <div class="col-auto"><span class="chip chip-light"><i class="bi bi-files me-1"></i>Multiple PDFs</span></div>
+      <div class="col-auto"><span class="chip chip-light"><i class="bi bi-clock-history me-1"></i>Conversation Memory</span></div>
+      <div class="col-auto"><span class="chip chip-light"><i class="bi bi-person-badge me-1"></i>Authentication</span></div>
+      <div class="col-auto"><span class="chip chip-light"><i class="bi bi-broadcast me-1"></i>Streaming Responses</span></div>
+      <div class="col-auto"><span class="chip chip-light"><i class="bi bi-box me-1"></i>Docker</span></div>
+      <div class="col-auto"><span class="chip chip-light"><i class="bi bi-cloud me-1"></i>Cloud Deployment</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROJECT GALLERY ===== -->
+<section class="py-5 bg-soft-white">
+  <div class="container">
+    <h2 class="section-title text-center mb-5">Project Gallery</h2>
+    <div class="row g-4">
+      <div class="col-md-4"><div class="screenshot-card"><img src="assets/images/projects/gallery-1.png" alt="gallery 1" /></div></div>
+      <div class="col-md-4"><div class="screenshot-card"><img src="assets/images/projects/gallery-2.png" alt="gallery 2" /></div></div>
+      <div class="col-md-4"><div class="screenshot-card"><img src="assets/images/projects/gallery-3.png" alt="gallery 3" /></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CALL TO ACTION ===== -->
+<section class="py-5">
+  <div class="container">
+    <div class="cta-card text-center">
+      <h3 class="fw-semibold mb-2">Interested in this project?</h3>
+      <p class="fs-5 text-muted-soft" style="max-width: 500px; margin: 0 auto 1.5rem;">Explore the code, try it yourself, or reach out for collaboration.</p>
+      <div class="d-flex flex-wrap justify-content-center gap-3">
+        <a href="https://github.com/mahkzmi/" class="btn btn-dark"><i class="bi bi-github me-2"></i>View GitHub</a>
+        <a href="index.html#contact" class="btn btn-outline-secondary"><i class="bi bi-envelope me-2"></i>Contact Me</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="soft-hr">
+
+<!-- ===== NEXT PROJECT ===== -->
+<section class="py-4">
+  <div class="container">
+    <div class="cta-card text-center">
+      <h3 class="fw-semibold mb-2">Coming Next</h3>
+      <p class="fs-5 text-muted-soft" style="max-width: 500px; margin: 0 auto 1.5rem;">I'm currently building new AI applications and backend systems. Stay tuned for upcoming projects.</p>
+      <a href="index.html#projects" class="btn btn-primary-soft"><i class="bi bi-arrow-left me-2"></i>Back to Projects</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+        <span class="text-muted-soft">© 2026 Mahdieh Kazemi</span>
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <a href="https://github.com/mahkzmi/"><i class="bi bi-github"></i></a>
+        <a href="#"><i class="bi bi-linkedin"></i></a>
+        <a href="#"><i class="bi bi-twitter-x"></i></a>
+        <a href="#"><i class="bi bi-envelope"></i></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ===== FADE-UP ON SCROLL ===== -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const fadeEls = document.querySelectorAll('.fade-up');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+    fadeEls.forEach(el => observer.observe(el));
+    document.querySelectorAll('.card, .feature-card, .screenshot-card, .cta-card, .timeline-item, .cover-placeholder, .pipeline-step').forEach(el => {
+      if (!el.classList.contains('fade-up')) {
+        el.classList.add('fade-up');
+        observer.observe(el);
+      }
+    });
+  });
+</script>
+</body>
 </html>

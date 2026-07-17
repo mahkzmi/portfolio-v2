@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Writing · Mahdieh Kazemi</title>
+  <meta name="description" content="Thoughts on backend engineering, AI, machine learning and building software." />
+  <!-- Open Graph -->
+  <meta property="og:title" content="Writing · Mahdieh Kazemi" />
+  <meta property="og:description" content="Thoughts on backend engineering, AI, machine learning and building software." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mahdiehkazemi.com/writing.html" />
+  <meta property="og:image" content="assets/images/writing/writing-cover.png" />
+  <!-- Bootstrap + Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── reset & base ── */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #ffffff;
+      color: #1e1e1e;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 1200px; }
+
+    /* ── navbar ── */
+    .navbar {
+      padding: 1.2rem 0;
+      background: rgba(255,255,255,0.80);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .navbar-brand {
+      font-weight: 600;
+      font-size: 1.25rem;
+      letter-spacing: -0.01em;
+      color: #1e1e1e;
+    }
+    .navbar-brand:hover { color: #1e1e1e; }
+    .nav-link {
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: #3a3a3a;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
+    .nav-link:hover { color: #000; background: #f5f5f5; }
+
+    /* ── typography ── */
+    h1, h2, h3, .display-4 { font-weight: 600; letter-spacing: -0.02em; }
+    .display-4 { font-weight: 700; }
+    .section-title {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+      letter-spacing: -0.02em;
+    }
+
+    /* ── cards ── */
+    .card {
+      border: none;
+      border-radius: 24px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.02);
+      background: #ffffff;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.06); }
+    .card-soft {
+      border-radius: 28px;
+      padding: 1.5rem 1.8rem;
+    }
+    .soft-shadow { box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
+    .badge-soft {
+      background: #f0f2f5;
+      color: #1e1e1e;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+    }
+    .badge-soft-sm {
+      background: #f0f2f5;
+      color: #1e1e1e;
+      font-weight: 500;
+      padding: 0.25rem 0.9rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+    }
+
+    /* ── buttons ── */
+    .btn-outline-dark {
+      border-radius: 60px;
+      padding: 0.6rem 1.6rem;
+      font-weight: 500;
+      border-color: #d0d4da;
+      color: #1e1e1e;
+    }
+    .btn-outline-dark:hover {
+      background: #1e1e1e;
+      color: #fff;
+      border-color: #1e1e1e;
+    }
+    .btn-dark {
+      border-radius: 60px;
+      padding: 0.6rem 1.8rem;
+      font-weight: 500;
+      background: #1e1e1e;
+      border: none;
+    }
+    .btn-dark:hover { background: #333; }
+    .btn-outline-secondary {
+      border-radius: 60px;
+      padding: 0.6rem 1.8rem;
+      border-color: #d0d4da;
+      color: #1e1e1e;
+    }
+    .btn-outline-secondary:hover {
+      background: #f0f2f5;
+      border-color: #b0b8c0;
+    }
+
+    /* ── chips ── */
+    .chip {
+      background: #f0f2f5;
+      padding: 0.45rem 1.2rem;
+      border-radius: 60px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      display: inline-block;
+      margin: 0.2rem;
+    }
+    .chip-light { background: #f5f7fa; }
+
+    /* ── cover ── */
+    .cover-placeholder {
+      background: #eef1f5;
+      border-radius: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+      border: 1px solid #e4e8ee;
+      overflow: hidden;
+    }
+    .cover-placeholder img {
+      width: 100%;
+      height: auto;
+      border-radius: 32px;
+    }
+
+    /* ── featured card ── */
+    .featured-card {
+      border-radius: 32px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.02);
+      transition: 0.2s;
+    }
+    .featured-card:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.06); }
+    .featured-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .featured-card .card-body {
+      padding: 2rem 2rem 2rem 2rem;
+    }
+
+    /* ── article card ── */
+    .article-card {
+      border-radius: 24px;
+      padding: 1.8rem 1.5rem;
+      background: #ffffff;
+      border: 1px solid #f0f2f5;
+      transition: 0.15s;
+      height: 100%;
+    }
+    .article-card:hover {
+      border-color: #e0e4ea;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+    }
+    .article-card .arrow-link {
+      color: #1e1e1e;
+      font-size: 1.2rem;
+      opacity: 0.5;
+      transition: 0.2s;
+    }
+    .article-card:hover .arrow-link {
+      opacity: 1;
+      transform: translateX(4px);
+    }
+    .article-card .meta {
+      font-size: 0.85rem;
+      color: #6b7a8f;
+    }
+
+    /* ── series timeline ── */
+    .series-item {
+      display: flex;
+      gap: 1.2rem;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #f0f2f5;
+    }
+    .series-item:last-child { border-bottom: none; }
+    .series-num {
+      font-weight: 500;
+      color: #6b7a8f;
+      min-width: 48px;
+    }
+
+    /* ── footer ── */
+    .footer {
+      padding: 3rem 0 2rem;
+      border-top: 1px solid #edf0f5;
+      color: #5a6478;
+      font-size: 0.95rem;
+    }
+    .footer a {
+      color: #1e1e1e;
+      text-decoration: none;
+      font-weight: 500;
+      margin: 0 0.5rem;
+    }
+    .footer a:hover { color: #000; }
+
+    /* ── utils ── */
+    .text-muted-soft { color: #6b7a8f; }
+    .bg-soft-white { background: #fafbfc; }
+    .border-radius-24 { border-radius: 24px; }
+    hr.soft-hr { opacity: 0.3; margin: 2.5rem 0; }
+
+    /* ── fade-up ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .display-4 { font-size: 2.4rem; }
+      .section-title { font-size: 1.8rem; }
+      .featured-card .card-body { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR (reused from index) ===== -->
+<nav class="navbar navbar-expand-md sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">Mahdieh Kazemi</a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+            aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="bi bi-list" style="font-size: 1.6rem;"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-md-center">
+        <li class="nav-item"><a class="nav-link" href="index.html#projects">Projects</a></li>
+        <li class="nav-item"><a class="nav-link active" href="writing.html">Writing</a></li>
+        <li class="nav-item"><a class="nav-link" href="index.html#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="uses.html">Uses</a></li>
+        <li class="nav-item"><a class="nav-link" href="now.html">Now</a></li>
+        <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="py-5">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="mb-3">
+          <span class="badge-soft">Writing</span>
+        </div>
+        <h1 class="display-4 fw-bold mb-3" style="letter-spacing: -0.03em;">Thoughts on backend engineering,<br />AI, machine learning and building software.</h1>
+        <p class="fs-5 text-muted-soft mb-4" style="max-width: 90%;">I write about the projects I'm building, the problems I solve, and the lessons I learn while becoming a better software engineer.</p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="#articles" class="btn btn-dark">Browse Articles</a>
+          <a href="index.html" class="btn btn-outline-secondary">Back Home</a>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="cover-placeholder">
+          <img src="../assets/images/writing/writing-cover.png" alt="Writing cover" style="width:100%; border-radius:32px;" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURED ARTICLE ===== -->
+<section class="py-5" id="featured">
+  <div class="container">
+    <div class="featured-card row g-0 align-items-stretch">
+      <div class="col-md-5">
+        <img src="../assets/images/writing/featured-pdf-chat.png" alt="Building AI PDF Chat with Python" style="width:100%; height:100%; object-fit:cover; min-height:240px;" />
+      </div>
+      <div class="col-md-7">
+        <div class="card-body d-flex flex-column h-100">
+          <div class="d-flex gap-2 mb-2">
+            <span class="badge-soft-sm">Build Log</span>
+            <span class="badge-soft-sm"><i class="bi bi-clock me-1"></i>8 min read</span>
+          </div>
+          <h3 class="fw-semibold mb-2" style="letter-spacing:-0.02em;">Building AI PDF Chat with Python</h3>
+          <p class="text-muted-soft" style="flex:1;">A complete breakdown of how I built an AI-powered PDF chat application using Retrieval-Augmented Generation, FastAPI and modern LLM workflows.</p>
+          <div class="mt-3">
+            <a href="#" class="btn btn-dark">Read Article <i class="bi bi-arrow-right ms-2"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LATEST ARTICLES ===== -->
+<section class="py-5" id="articles">
+  <div class="container">
+    <h2 class="section-title mb-4">Latest Articles</h2>
+    <div class="row g-4">
+      <!-- Card 1 -->
+      <div class="col-md-6 col-lg-4">
+        <div class="article-card d-flex flex-column">
+          <div class="d-flex flex-wrap gap-2 mb-2">
+            <span class="badge-soft-sm">Build Log</span>
+            <span class="badge-soft-sm"><i class="bi bi-clock me-1"></i>8 min</span>
+          </div>
+          <h5 class="fw-semibold">Building AI PDF Chat with Python</h5>
+          <p class="text-muted-soft small flex-grow-1">A complete breakdown of how I built an AI-powered PDF chat application using RAG, FastAPI and LLMs.</p>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="meta">Apr 12, 2026</span>
+            <a href="#" class="arrow-link"><i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <!-- Card 2 -->
+      <div class="col-md-6 col-lg-4">
+        <div class="article-card d-flex flex-column">
+          <div class="d-flex flex-wrap gap-2 mb-2">
+            <span class="badge-soft-sm">Case Study</span>
+            <span class="badge-soft-sm"><i class="bi bi-clock me-1"></i>5 min</span>
+          </div>
+          <h5 class="fw-semibold">Behind MoodLens AI</h5>
+          <p class="text-muted-soft small flex-grow-1">Exploring the design and development of an NLP-powered sentiment analysis tool built with Python and Scikit-learn.</p>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="meta">Mar 28, 2026</span>
+            <a href="#" class="arrow-link"><i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <!-- Card 3 -->
+      <div class="col-md-6 col-lg-4">
+        <div class="article-card d-flex flex-column">
+          <div class="d-flex flex-wrap gap-2 mb-2">
+            <span class="badge-soft-sm">Learning</span>
+            <span class="badge-soft-sm"><i class="bi bi-clock me-1"></i>6 min</span>
+          </div>
+          <h5 class="fw-semibold">What I Learned Building My First RAG App</h5>
+          <p class="text-muted-soft small flex-grow-1">Lessons on chunking, embedding quality, and prompt engineering from building a production-grade RAG pipeline.</p>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="meta">Mar 15, 2026</span>
+            <a href="#" class="arrow-link"><i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <!-- Card 4 -->
+      <div class="col-md-6 col-lg-4">
+        <div class="article-card d-flex flex-column">
+          <div class="d-flex flex-wrap gap-2 mb-2">
+            <span class="badge-soft-sm">Career</span>
+            <span class="badge-soft-sm"><i class="bi bi-clock me-1"></i>4 min</span>
+          </div>
+          <h5 class="fw-semibold">From Agriculture to AI Engineering</h5>
+          <p class="text-muted-soft small flex-grow-1">How my background in agricultural engineering shaped my approach to software, data, and problem-solving.</p>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="meta">Feb 20, 2026</span>
+            <a href="#" class="arrow-link"><i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <!-- Card 5 -->
+      <div class="col-md-6 col-lg-4">
+        <div class="article-card d-flex flex-column">
+          <div class="d-flex flex-wrap gap-2 mb-2">
+            <span class="badge-soft-sm">Notes</span>
+            <span class="badge-soft-sm"><i class="bi bi-clock me-1"></i>3 min</span>
+          </div>
+          <h5 class="fw-semibold">Machine Learning Notes</h5>
+          <p class="text-muted-soft small flex-grow-1">A curated collection of ML concepts, practical tips, and resources I reference while building models.</p>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="meta">Feb 5, 2026</span>
+            <a href="#" class="arrow-link"><i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <!-- Card 6 -->
+      <div class="col-md-6 col-lg-4">
+        <div class="article-card d-flex flex-column">
+          <div class="d-flex flex-wrap gap-2 mb-2">
+            <span class="badge-soft-sm">Journal</span>
+            <span class="badge-soft-sm"><i class="bi bi-clock me-1"></i>2 min</span>
+          </div>
+          <h5 class="fw-semibold">Debugging Journal</h5>
+          <p class="text-muted-soft small flex-grow-1">Real debugging stories: the bugs, the fixes, and the moments of clarity that make engineering rewarding.</p>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="meta">Jan 18, 2026</span>
+            <a href="#" class="arrow-link"><i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CATEGORIES ===== -->
+<section class="py-5 bg-soft-white">
+  <div class="container">
+    <h2 class="section-title text-center mb-4">Categories</h2>
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+      <span class="chip chip-light">Backend</span>
+      <span class="chip chip-light">Python</span>
+      <span class="chip chip-light">Machine Learning</span>
+      <span class="chip chip-light">Artificial Intelligence</span>
+      <span class="chip chip-light">FastAPI</span>
+      <span class="chip chip-light">Learning</span>
+      <span class="chip chip-light">Build Logs</span>
+      <span class="chip chip-light">Career</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CURRENT SERIES ===== -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="section-title mb-4">Current Series</h2>
+    <div class="card card-soft p-4 p-md-5 soft-shadow" style="border-radius: 28px;">
+      <div class="series-item">
+        <span class="series-num">01</span>
+        <div><strong>Building in Public</strong> <span class="text-muted-soft ms-2">— Portfolio Launch</span></div>
+      </div>
+      <div class="series-item">
+        <span class="series-num">02</span>
+        <div><strong>Building in Public</strong> <span class="text-muted-soft ms-2">— MoodLens AI</span></div>
+      </div>
+      <div class="series-item">
+        <span class="series-num">03</span>
+        <div><strong>Building in Public</strong> <span class="text-muted-soft ms-2">— AI PDF Chat</span></div>
+      </div>
+      <div class="series-item">
+        <span class="series-num">04</span>
+        <div><strong>Building in Public</strong> <span class="text-muted-soft ms-2">— Machine Learning Lab</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== NEWSLETTER / SOCIAL CTA ===== -->
+<section class="py-5 bg-soft-white">
+  <div class="container">
+    <div class="card card-soft p-4 p-md-5 text-center soft-shadow" style="border-radius: 40px;">
+      <h2 class="fw-semibold mb-2">Follow the journey.</h2>
+      <p class="fs-5 text-muted-soft" style="max-width: 500px; margin: 0 auto 1.2rem;">I'm documenting everything I build, learn, and ship.</p>
+      <div class="d-flex flex-wrap justify-content-center gap-3">
+        <a href="https://github.com/mahkzmi/" class="btn btn-dark"><i class="bi bi-github me-2"></i>GitHub</a>
+        <a href="#" class="btn btn-outline-secondary"><i class="bi bi-linkedin me-2"></i>LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+        <span class="text-muted-soft">© 2026 Mahdieh Kazemi</span>
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <a href="https://github.com/mahkzmi/"><i class="bi bi-github"></i></a>
+        <a href="#"><i class="bi bi-linkedin"></i></a>
+        <a href="#"><i class="bi bi-twitter-x"></i></a>
+        <a href="#"><i class="bi bi-envelope"></i></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ===== FADE-UP ON SCROLL ===== -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const fadeEls = document.querySelectorAll('.fade-up');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+    fadeEls.forEach(el => observer.observe(el));
+    document.querySelectorAll('.card, .article-card, .featured-card, .series-item, .cover-placeholder, .chip').forEach(el => {
+      if (!el.classList.contains('fade-up')) {
+        el.classList.add('fade-up');
+        observer.observe(el);
+      }
+    });
+  });
+</script>
+</body>
+</html>
+```
