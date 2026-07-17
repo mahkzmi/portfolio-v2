@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Behind MoodLens AI · Engineering Blog | Mahdieh Kazemi</title>
+  <meta name="description" content="Behind MoodLens AI — an in-depth engineering blog post about building an NLP-powered sentiment analysis application. Real story, real code, real lessons." />
+  <!-- Open Graph -->
+  <meta property="og:title" content="Behind MoodLens AI — The Engineering Story" />
+  <meta property="og:description" content="A deep dive into building MoodLens AI: dataset selection, text preprocessing, model choice, UX decisions, and lessons learned." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://mahdiehkazemi.com/behind-moodlens-ai.html" />
+  <meta property="og:image" content="assets/images/projects/moodlens-cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <!-- Bootstrap + Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── reset & base ── */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #ffffff;
+      color: #1e1e1e;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 1200px; }
+
+    /* ── navbar ── */
+    .navbar {
+      padding: 1.2rem 0;
+      background: rgba(255,255,255,0.80);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .navbar-brand {
+      font-weight: 600;
+      font-size: 1.25rem;
+      letter-spacing: -0.01em;
+      color: #1e1e1e;
+    }
+    .navbar-brand:hover { color: #1e1e1e; }
+    .nav-link {
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: #3a3a3a;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
+    .nav-link:hover { color: #000; background: #f5f5f5; }
+
+    /* ── typography ── */
+    h1, h2, h3, .display-4 { font-weight: 600; letter-spacing: -0.02em; }
+    .display-4 { font-weight: 700; }
+    .section-title {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+      letter-spacing: -0.02em;
+    }
+    .blog-content {
+      font-size: 1.125rem;
+      line-height: 1.8;
+      color: #2a2a2a;
+    }
+    .blog-content h3 {
+      font-weight: 600;
+      font-size: 1.6rem;
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+      color: #1a1a1a;
+      letter-spacing: -0.02em;
+    }
+    .blog-content h4 {
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      color: #1a1a1a;
+    }
+    .blog-content p {
+      margin-bottom: 1.5rem;
+      color: #2e3a4a;
+    }
+    .blog-content .lead {
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: #3a4a5a;
+    }
+
+    /* ── cards ── */
+    .card {
+      border: none;
+      border-radius: 24px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.02);
+      background: #ffffff;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.06); }
+    .card-soft {
+      border-radius: 28px;
+      padding: 1.5rem 1.8rem;
+    }
+    .soft-shadow { box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
+    .badge-soft {
+      background: #f0f2f5;
+      color: #1e1e1e;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+    }
+    .badge-soft-dark {
+      background: #1e1e1e;
+      color: #fff;
+      font-weight: 500;
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+    }
+
+    /* ── buttons ── */
+    .btn-outline-dark {
+      border-radius: 60px;
+      padding: 0.6rem 1.6rem;
+      font-weight: 500;
+      border-color: #d0d4da;
+      color: #1e1e1e;
+    }
+    .btn-outline-dark:hover {
+      background: #1e1e1e;
+      color: #fff;
+      border-color: #1e1e1e;
+    }
+    .btn-dark {
+      border-radius: 60px;
+      padding: 0.6rem 1.8rem;
+      font-weight: 500;
+      background: #1e1e1e;
+      border: none;
+    }
+    .btn-dark:hover { background: #333; }
+    .btn-primary-soft {
+      background: #1e1e1e;
+      border: none;
+      border-radius: 60px;
+      padding: 0.65rem 2rem;
+      font-weight: 500;
+      color: #fff;
+      transition: 0.2s;
+    }
+    .btn-primary-soft:hover { background: #333; color: #fff; }
+
+    /* ── blog meta ── */
+    .blog-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.5rem;
+      color: #6b7a8f;
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+    }
+    .blog-meta span { display: flex; align-items: center; gap: 0.4rem; }
+
+    /* ── cover ── */
+    .cover-placeholder {
+      background: #eef1f5;
+      border-radius: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+      border: 1px solid #e4e8ee;
+    }
+    .cover-placeholder img {
+      width: 100%;
+      height: auto;
+      border-radius: 32px;
+    }
+
+    /* ── highlight & quote ── */
+    .highlight-box {
+      background: #fafbfc;
+      border-radius: 24px;
+      padding: 2rem 2.5rem;
+      border: 1px solid #edf0f5;
+      margin: 2.5rem 0;
+    }
+    .highlight-box .icon-lg {
+      font-size: 2.5rem;
+      display: block;
+      margin-bottom: 1rem;
+    }
+    .blog-content blockquote {
+      border-left: 4px solid #1e1e1e;
+      padding-left: 1.8rem;
+      margin: 2.5rem 0;
+      font-style: italic;
+      color: #3a4a5a;
+      font-size: 1.15rem;
+    }
+    .blog-content blockquote cite {
+      display: block;
+      margin-top: 0.5rem;
+      font-style: normal;
+      font-weight: 500;
+      color: #1e1e1e;
+    }
+
+    /* ── code block ── */
+    .code-block {
+      background: #f5f7fa;
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+      font-family: 'SF Mono', 'Monaco', 'Menlo', 'Cascadia Code', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+      margin: 1.8rem 0;
+      border: 1px solid #edf0f5;
+      line-height: 1.6;
+    }
+    .code-block .comment { color: #6b7a8f; }
+    .code-block .keyword { color: #d73a49; }
+    .code-block .string { color: #032f62; }
+    .code-block .function { color: #6f42c1; }
+
+    /* ── pipeline ── */
+    .pipeline-step {
+      background: #f8fafc;
+      border-radius: 40px;
+      padding: 0.9rem 1.8rem;
+      font-weight: 500;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      font-size: 0.95rem;
+    }
+    .pipeline-arrow {
+      font-size: 1.8rem;
+      color: #a0aab8;
+      font-weight: 300;
+    }
+
+    /* ── stats ── */
+    .stat-card {
+      background: #fafbfc;
+      border-radius: 24px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      border: 1px solid #edf0f5;
+    }
+    .stat-number {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #1e1e1e;
+    }
+    .stat-label {
+      color: #6b7a8f;
+      font-size: 0.95rem;
+      margin-top: 0.25rem;
+    }
+
+    /* ── footer ── */
+    .footer {
+      padding: 3rem 0 2rem;
+      border-top: 1px solid #edf0f5;
+      color: #5a6478;
+      font-size: 0.95rem;
+    }
+    .footer a {
+      color: #1e1e1e;
+      text-decoration: none;
+      font-weight: 500;
+      margin: 0 0.5rem;
+    }
+    .footer a:hover { color: #000; }
+
+    /* ── utilities ── */
+    .text-muted-soft { color: #6b7a8f; }
+    .bg-soft-white { background: #fafbfc; }
+    hr.soft-hr { opacity: 0.3; margin: 3rem 0; }
+
+    /* ── fade-up ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .display-4 { font-size: 2.4rem; }
+      .section-title { font-size: 1.8rem; }
+      .blog-content { font-size: 1rem; }
+      .blog-content h3 { font-size: 1.4rem; }
+      .stat-number { font-size: 2.2rem; }
+      .highlight-box { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar navbar-expand-md sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">Mahdieh Kazemi</a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+            aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="bi bi-list" style="font-size: 1.6rem;"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-md-center">
+        <li class="nav-item"><a class="nav-link" href="../index.html#projects">Projects</a></li>
+        <li class="nav-item"><a class="nav-link" href="../index.html#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="../uses.html">Uses</a></li>
+        <li class="nav-item"><a class="nav-link" href="../now.html">Now</a></li>
+        <li class="nav-item"><a class="nav-link" href="../index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="py-5">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7">
+        <div class="mb-3 d-flex flex-wrap align-items-center gap-2">
+          <span class="badge-soft" style="background: #eaeef3;">Engineering Blog</span>
+          <span class="badge-soft" style="background: #eaeef3;"><i class="bi bi-clock me-1"></i>12 min read</span>
+          <span class="badge-soft" style="background: #eaeef3;"><i class="bi bi-calendar3 me-1"></i>July 17, 2026</span>
+        </div>
+        <h1 class="display-4 fw-bold mb-3" style="letter-spacing: -0.03em;">Behind MoodLens AI</h1>
+        <p class="fs-4 fw-normal text-muted-soft mb-3" style="max-width: 90%;">The engineering story behind building an NLP-powered sentiment analysis application.</p>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="moodlens.html" class="btn btn-dark"><i class="bi bi-arrow-left me-2"></i>Case Study</a>
+          <a href="https://github.com/mahkzmi/MoodLensAI.git" class="btn btn-outline-secondary"><i class="bi bi-github me-2"></i>GitHub</a>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="cover-placeholder">
+          <img src="../assets/images/writing/MoodLens AI.png" alt="MoodLens AI cover" style="width:100%; border-radius:32px;" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BLOG CONTENT ===== -->
+<section class="py-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="blog-content">
+
+          <!-- 1. Why I built it -->
+          <p class="lead">I didn't set out to build a machine learning application. I set out to answer a simple question: <strong>can a machine understand how we feel?</strong></p>
+
+          <p>It started with a personal frustration. I was journaling daily, but I never looked back at what I'd written. Thousands of words, countless emotions — all buried in plain text. I wanted a tool that could surface patterns in my own writing, that could tell me: <em>"You've been feeling anxious lately"</em> or <em>"There's a trend of joy in your entries."</em></p>
+
+          <p>That curiosity turned into a weekend project. And that weekend project became MoodLens AI — a clean, fast, and surprisingly accurate sentiment classifier.</p>
+
+          <!-- 2. The idea started much smaller -->
+          <h3>The idea started much smaller</h3>
+          <p>The first version was a Jupyter notebook with a few lines of scikit-learn code. I threw some text at it, got a prediction back, and thought: <em>"This is cool, but no one will ever use this."</em></p>
+          <p>So I built a Streamlit interface around it. Then I added confidence scores. Then I cleaned the UI. Then I deployed it. Each step made the project feel more real, more useful. What started as a script became a product.</p>
+
+          <div class="highlight-box">
+            <span class="icon-lg"><i class="bi bi-arrow-up-circle"></i></span>
+            <h5 style="font-weight: 600;">The evolution</h5>
+            <p class="mb-0" style="font-size: 1.05rem; color: #2a3a4a;">Jupyter Notebook → Streamlit prototype → Polished web app → Open-source project</p>
+          </div>
+
+          <!-- 3. Finding the right dataset -->
+          <h3>Finding the right dataset</h3>
+          <p>Data is the foundation of any ML project, and I quickly learned that most public emotion datasets are a mess. Imbalanced classes, inconsistent labels, and text that's cleaned to the point of being unnatural.</p>
+          <p>I eventually settled on a dataset of social media posts and diary entries labeled with six emotions: <strong>joy, sadness, anger, fear, surprise, and disgust</strong>. It wasn't perfect, but it was representative of how people actually write — typos, slang, emojis, and all.</p>
+
+          <div class="row g-3 my-4">
+            <div class="col-6 col-md-3">
+              <div class="stat-card">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Emotion classes</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="stat-card">
+                <div class="stat-number">12k</div>
+                <div class="stat-label">Training samples</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="stat-card">
+                <div class="stat-number">85%</div>
+                <div class="stat-label">Validation accuracy</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="stat-card">
+                <div class="stat-number">0.3s</div>
+                <div class="stat-label">Inference time</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Cleaning text is harder than training models -->
+          <h3>Cleaning text is harder than training models</h3>
+          <p>Everyone talks about model selection. No one talks about how much time you'll spend removing emojis, standardizing contractions, and deciding whether "ughhh" should be considered "anger" or just a typo.</p>
+          <p>Text cleaning is unglamorous, but it's the difference between a model that works and one that doesn't. Here's the core cleaning pipeline I ended up with:</p>
+
+          <div class="code-block">
+            <code>
+              <span class="keyword">import</span> re<br>
+              <span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> stopwords<br>
+              <span class="keyword">from</span> nltk.stem <span class="keyword">import</span> PorterStemmer<br><br>
+              <span class="keyword">def</span> <span class="function">clean_text</span>(text):<br>
+              &nbsp;&nbsp;  <span class="comment"># Lowercase</span><br>
+              &nbsp;&nbsp;  text = text.lower()<br>
+              &nbsp;&nbsp;  <span class="comment"># Remove special characters & numbers</span><br>
+              &nbsp;&nbsp;  text = re.sub(<span class="string">r'[^a-zA-Z\s]'</span>, <span class="string">''</span>, text)<br>
+              &nbsp;&nbsp;  <span class="comment"># Remove stopwords</span><br>
+              &nbsp;&nbsp;  stop_words = set(stopwords.words(<span class="string">'english'</span>))<br>
+              &nbsp;&nbsp;  text = <span class="string">' '</span>.join([w <span class="keyword">for</span> w <span class="keyword">in</span> text.split() <span class="keyword">if</span> w <span class="keyword">not</span> <span class="keyword">in</span> stop_words])<br>
+              &nbsp;&nbsp;  <span class="comment"># Stemming</span><br>
+              &nbsp;&nbsp;  stemmer = PorterStemmer()<br>
+              &nbsp;&nbsp;  text = <span class="string">' '</span>.join([stemmer.stem(w) <span class="keyword">for</span> w <span class="keyword">in</span> text.split()])<br>
+              &nbsp;&nbsp;  <span class="keyword">return</span> text
+            </code>
+          </div>
+
+          <p>I tried everything — lemmatization, custom stopword lists, spell-checking. In the end, the simplest approach worked best. Over-engineering preprocessing actually hurt accuracy.</p>
+
+          <!-- 5. Choosing the model -->
+          <h3>Choosing the model: Logistic Regression + TF-IDF</h3>
+          <p>BERT is great. BERT is also huge, slow, and overkill for a real-time sentiment app. I needed something that could run on a modest server and return predictions in under 200ms.</p>
+          <p>Logistic Regression with TF-IDF vectorization is a classic combination for text classification. It's fast, interpretable, and — with enough data — surprisingly accurate. The feature space is sparse, the model is linear, and the inference is essentially a matrix multiplication.</p>
+
+          <blockquote>
+            "The best model is the one that solves the problem, not the one that looks impressive on a leaderboard."
+            <cite>— Mahdieh Kazemi</cite>
+          </blockquote>
+
+          <p>I also experimented with SVM and Random Forest, but Logistic Regression consistently outperformed them in terms of speed without a significant drop in accuracy.</p>
+
+          <!-- 6. Prediction pipeline -->
+          <h3>Designing the prediction pipeline</h3>
+          <p>The pipeline needed to be modular, testable, and easy to serialize. I built it using scikit-learn's <code>Pipeline</code> class, which chains the vectorizer and the classifier into a single object.</p>
+
+          <div class="my-5">
+            <div class="d-flex flex-wrap justify-content-center align-items-center gap-3 gap-md-4">
+              <span class="pipeline-step"><i class="bi bi-box-arrow-in-right me-1"></i>Input</span>
+              <span class="pipeline-arrow"><i class="bi bi-arrow-down-short d-md-none"></i><i class="bi bi-arrow-right d-none d-md-inline"></i></span>
+              <span class="pipeline-step"><i class="bi bi-eraser me-1"></i>Cleaning</span>
+              <span class="pipeline-arrow"><i class="bi bi-arrow-down-short d-md-none"></i><i class="bi bi-arrow-right d-none d-md-inline"></i></span>
+              <span class="pipeline-step"><i class="bi bi-bar-chart me-1"></i>TF-IDF</span>
+              <span class="pipeline-arrow"><i class="bi bi-arrow-down-short d-md-none"></i><i class="bi bi-arrow-right d-none d-md-inline"></i></span>
+              <span class="pipeline-step"><i class="bi bi-graph-up me-1"></i>Prediction</span>
+              <span class="pipeline-arrow"><i class="bi bi-arrow-down-short d-md-none"></i><i class="bi bi-arrow-right d-none d-md-inline"></i></span>
+              <span class="pipeline-step"><i class="bi bi-emoji-smile me-1"></i>Emotion</span>
+              <span class="pipeline-arrow"><i class="bi bi-arrow-down-short d-md-none"></i><i class="bi bi-arrow-right d-none d-md-inline"></i></span>
+              <span class="pipeline-step"><i class="bi bi-percent me-1"></i>Confidence</span>
+            </div>
+          </div>
+
+          <p>The pipeline is serialized using Pickle, making it portable and ready for deployment. Loading the model and running a prediction takes less than 200ms on a standard cloud instance.</p>
+
+          <!-- 7. Making the interface feel human -->
+          <h3>Making the interface feel human</h3>
+          <p>Machine learning is only half the product. The other half is user experience. I wanted MoodLens to feel like a conversation, not a black box.</p>
+          <p>That meant:</p>
+          <ul>
+            <li><strong>Minimal UI</strong> — no clutter, no distractions. Just a text box and a result.</li>
+            <li><strong>Instant feedback</strong> — predictions appear as soon as the user stops typing.</li>
+            <li><strong>Confidence scores</strong> — users need to know how certain the model is.</li>
+            <li><strong>Clean typography</strong> — the result should feel human, not robotic.</li>
+          </ul>
+
+          <div class="highlight-box">
+            <span class="icon-lg"><i class="bi bi-heart"></i></span>
+            <h5 style="font-weight: 600;">Design principle</h5>
+            <p class="mb-0" style="font-size: 1.05rem; color: #2a3a4a;">Every element should serve the user's understanding. If it doesn't help them, remove it.</p>
+          </div>
+
+          <!-- 8. Mistakes I made -->
+          <h3>Mistakes I made</h3>
+          <div class="row g-4 my-4">
+            <div class="col-md-6">
+              <div class="card card-soft h-100" style="background: #fafbfc;">
+                <i class="bi bi-exclamation-triangle fs-3 mb-2" style="color: #d73a49;"></i>
+                <h6>Over-engineering preprocessing</h6>
+                <p class="text-muted-soft small mb-0">I tried lemmatization, custom stopword lists, and spell-checking. All of them made the model worse. Simplicity won.</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card card-soft h-100" style="background: #fafbfc;">
+                <i class="bi bi-exclamation-triangle fs-3 mb-2" style="color: #d73a49;"></i>
+                <h6>Ignoring class imbalance</h6>
+                <p class="text-muted-soft small mb-0">Some emotions had far more samples than others. I had to oversample the minority classes to get balanced performance.</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card card-soft h-100" style="background: #fafbfc;">
+                <i class="bi bi-exclamation-triangle fs-3 mb-2" style="color: #d73a49;"></i>
+                <h6>Deploying without testing</h6>
+                <p class="text-muted-soft small mb-0">I pushed to production and immediately hit a dependency conflict. Now I always test in a fresh virtual environment.</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card card-soft h-100" style="background: #fafbfc;">
+                <i class="bi bi-exclamation-triangle fs-3 mb-2" style="color: #d73a49;"></i>
+                <h6>Not documenting the model</h6>
+                <p class="text-muted-soft small mb-0">I came back to the project two weeks later and couldn't remember the exact preprocessing steps. Never again.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 9. Lessons learned -->
+          <h3>Lessons learned</h3>
+          <div class="card card-soft p-4 p-md-5 soft-shadow my-4" style="border-radius: 28px;">
+            <div class="d-flex gap-3 align-items-start mb-4">
+              <span class="badge-soft-dark">1</span>
+              <div><h6 class="mb-1">Technical: Start simple</h6><p class="text-muted-soft small">Begin with the simplest possible solution. Only add complexity when you need it.</p></div>
+            </div>
+            <div class="d-flex gap-3 align-items-start mb-4">
+              <span class="badge-soft-dark">2</span>
+              <div><h6 class="mb-1">Product: Design for the user</h6><p class="text-muted-soft small">The best model in the world is useless if no one can understand or trust its output.</p></div>
+            </div>
+            <div class="d-flex gap-3 align-items-start mb-0">
+              <span class="badge-soft-dark">3</span>
+              <div><h6 class="mb-1">Process: Document everything</h6><p class="text-muted-soft small">Future you will thank you. Data cleaning, model parameters, deployment steps — write it all down.</p></div>
+            </div>
+          </div>
+
+          <!-- 10. What's next -->
+          <h3>What's next</h3>
+          <p>MoodLens AI is just the beginning. I'm planning several major improvements:</p>
+          <ul>
+            <li><strong>Transformer models</strong> — Fine-tuning a lightweight BERT variant for better accuracy.</li>
+            <li><strong>Emotion history</strong> — Track user's emotional patterns over time.</li>
+            <li><strong>Multi-language support</strong> — Arabic, French, and Turkish are high on my list.</li>
+            <li><strong>API access</strong> — Allow other developers to integrate MoodLens into their own apps.</li>
+            <li><strong>Charts & visualization</strong> — Help users see their emotional trends at a glance.</li>
+          </ul>
+
+          <!-- 11. Final thoughts -->
+          <h3>Final thoughts</h3>
+          <p>Building MoodLens AI reminded me why I love engineering. It's not about the latest framework or the most complex model. It's about taking an idea — no matter how small — and turning it into something that works.</p>
+          <p>It's about asking questions. It's about being curious. And it's about sharing what you learn with others.</p>
+          <p>If you're building something similar, I'd love to hear about it. <a href="index.html#contact" style="color: #1e1e1e; font-weight: 500;">Reach out</a> anytime.</p>
+
+          <hr class="soft-hr" />
+
+          <div class="text-center py-3">
+            <p style="font-size: 1.05rem; color: #3a4a5a;">
+              <i class="bi bi-arrow-left me-2"></i> Read the <a href="moodlens.html" style="color: #1e1e1e; font-weight: 500;">MoodLens AI case study</a> for a complete project overview.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RELATED / CTA ===== -->
+<section class="py-5 bg-soft-white">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card p-4 p-md-5 text-center" style="border-radius: 40px; border: 1px solid #edf0f5;">
+          <h3 class="fw-semibold mb-2">Explore the full case study</h3>
+          <p class="text-muted-soft" style="max-width: 500px; margin: 0 auto 1.5rem;">Technical details, architecture decisions, and the complete development process.</p>
+          <div class="d-flex flex-wrap gap-3 justify-content-center">
+            <a href="moodlens.html" class="btn btn-dark"><i class="bi bi-book me-2"></i>Read Case Study</a>
+            <a href="https://github.com/mahkzmi/MoodLensAI.git" class="btn btn-outline-secondary"><i class="bi bi-github me-2"></i>View on GitHub</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+        <span class="text-muted-soft">© 2026 Mahdieh Kazemi</span>
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <a href="https://github.com/mahkzmi/MoodLensAI.git"><i class="bi bi-github"></i></a>
+        <a href="#"><i class="bi bi-linkedin"></i></a>
+        <a href="#"><i class="bi bi-twitter-x"></i></a>
+        <a href="#"><i class="bi bi-envelope"></i></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ===== FADE-UP ON SCROLL ===== -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    document.querySelectorAll('.card, .highlight-box, .stat-card, .cover-placeholder, .pipeline-step, .cta-card').forEach(el => {
+      if (!el.classList.contains('fade-up')) {
+        el.classList.add('fade-up');
+        observer.observe(el);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
