@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Behind Pima Diabetes Predictor · Engineering Blog | Mahdieh Kazemi</title>
+  <meta name="description" content="Building a diabetes prediction model from scratch — the engineering story behind data cleaning, model selection, hyperparameter tuning, and deployment." />
+  <!-- Open Graph -->
+  <meta property="og:title" content="Behind the Pima Diabetes Predictor — The Engineering Story" />
+  <meta property="og:description" content="A deep dive into building a diabetes prediction model: data cleaning, XGBoost, hyperparameter tuning, and lessons learned." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://thetalkingdev.onrender.com/behind-pima-diabetes.html" />
+  <meta property="og:image" content="../assets/images/projects/diabetes-cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <!-- Bootstrap + Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── reset & base ── */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #ffffff;
+      color: #1e1e1e;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 1200px; }
+
+    /* ── navbar ── */
+    .navbar {
+      padding: 1.2rem 0;
+      background: rgba(255,255,255,0.80);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .navbar-brand {
+      font-weight: 600;
+      font-size: 1.25rem;
+      letter-spacing: -0.01em;
+      color: #1e1e1e;
+    }
+    .navbar-brand:hover { color: #1e1e1e; }
+    .nav-link {
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: #3a3a3a;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
+    .nav-link:hover { color: #000; background: #f5f5f5; }
+
+    /* ── typography ── */
+    h1, h2, h3, .display-4 { font-weight: 600; letter-spacing: -0.02em; }
+    .display-4 { font-weight: 700; }
+    .section-title {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+      letter-spacing: -0.02em;
+    }
+    .blog-content {
+      font-size: 1.125rem;
+      line-height: 1.8;
+      color: #2a2a2a;
+    }
+    .blog-content h3 {
+      font-weight: 600;
+      font-size: 1.6rem;
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+      color: #1a1a1a;
+      letter-spacing: -0.02em;
+    }
+    .blog-content h4 {
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      color: #1a1a1a;
+    }
+    .blog-content p {
+      margin-bottom: 1.5rem;
+      color: #2e3a4a;
+    }
+    .blog-content .lead {
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: #3a4a5a;
+    }
+    .blog-content ul, .blog-content ol {
+      margin-bottom: 1.5rem;
+      padding-left: 1.5rem;
+    }
+    .blog-content li {
+      margin-bottom: 0.5rem;
+    }
+    .blog-content strong {
+      color: #1a1a1a;
+    }
+
+    /* ── cards ── */
+    .card {
+      border: none;
+      border-radius: 24px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.02);
+      background: #ffffff;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.06); }
+    .card-soft {
+      border-radius: 28px;
+      padding: 1.5rem 1.8rem;
+    }
+    .soft-shadow { box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
+    .badge-soft {
+      background: #f0f2f5;
+      color: #1e1e1e;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+    }
+    .badge-soft-dark {
+      background: #1e1e1e;
+      color: #fff;
+      font-weight: 500;
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+    }
+
+    /* ── buttons ── */
+    .btn-outline-dark {
+      border-radius: 60px;
+      padding: 0.6rem 1.6rem;
+      font-weight: 500;
+      border-color: #d0d4da;
+      color: #1e1e1e;
+    }
+    .btn-outline-dark:hover {
+      background: #1e1e1e;
+      color: #fff;
+      border-color: #1e1e1e;
+    }
+    .btn-dark {
+      border-radius: 60px;
+      padding: 0.6rem 1.8rem;
+      font-weight: 500;
+      background: #1e1e1e;
+      border: none;
+    }
+    .btn-dark:hover { background: #333; }
+    .btn-primary-soft {
+      background: #1e1e1e;
+      border: none;
+      border-radius: 60px;
+      padding: 0.65rem 2rem;
+      font-weight: 500;
+      color: #fff;
+      transition: 0.2s;
+    }
+    .btn-primary-soft:hover { background: #333; color: #fff; }
+
+    /* ── blog meta ── */
+    .blog-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.5rem;
+      color: #6b7a8f;
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+    }
+    .blog-meta span { display: flex; align-items: center; gap: 0.4rem; }
+
+    /* ── cover ── */
+    .cover-placeholder {
+      background: #eef1f5;
+      border-radius: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+      border: 1px solid #e4e8ee;
+    }
+    .cover-placeholder img {
+      width: 100%;
+      height: auto;
+      border-radius: 32px;
+    }
+
+    /* ── highlight & quote ── */
+    .highlight-box {
+      background: #fafbfc;
+      border-radius: 24px;
+      padding: 2rem 2.5rem;
+      border: 1px solid #edf0f5;
+      margin: 2.5rem 0;
+    }
+    .highlight-box .icon-lg {
+      font-size: 2.5rem;
+      display: block;
+      margin-bottom: 1rem;
+    }
+    .blog-content blockquote {
+      border-left: 4px solid #1e1e1e;
+      padding-left: 1.8rem;
+      margin: 2.5rem 0;
+      font-style: italic;
+      color: #3a4a5a;
+      font-size: 1.15rem;
+    }
+    .blog-content blockquote cite {
+      display: block;
+      margin-top: 0.5rem;
+      font-style: normal;
+      font-weight: 500;
+      color: #1e1e1e;
+    }
+
+    /* ── code block ── */
+    .code-block {
+      background: #f5f7fa;
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+      font-family: 'SF Mono', 'Monaco', 'Menlo', 'Cascadia Code', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+      margin: 1.8rem 0;
+      border: 1px solid #edf0f5;
+      line-height: 1.6;
+    }
+    .code-block .comment { color: #6b7a8f; }
+    .code-block .keyword { color: #d73a49; }
+    .code-block .string { color: #032f62; }
+    .code-block .function { color: #6f42c1; }
+
+    /* ── stats ── */
+    .stat-card {
+      background: #fafbfc;
+      border-radius: 24px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      border: 1px solid #edf0f5;
+    }
+    .stat-number {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #1e1e1e;
+    }
+    .stat-label {
+      color: #6b7a8f;
+      font-size: 0.95rem;
+      margin-top: 0.25rem;
+    }
+
+    /* ── results table ── */
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+    .results-table th {
+      background: #f5f7fa;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      border-bottom: 2px solid #e4e8ee;
+    }
+    .results-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #edf0f5;
+      color: #2e3a4a;
+    }
+    .results-table .highlight-row {
+      background: #fafbfc;
+      font-weight: 500;
+    }
+
+    /* ── footer ── */
+    .footer {
+      padding: 3rem 0 2rem;
+      border-top: 1px solid #edf0f5;
+      color: #5a6478;
+      font-size: 0.95rem;
+    }
+    .footer a {
+      color: #1e1e1e;
+      text-decoration: none;
+      font-weight: 500;
+      margin: 0 0.5rem;
+    }
+    .footer a:hover { color: #000; }
+
+    /* ── utilities ── */
+    .text-muted-soft { color: #6b7a8f; }
+    .bg-soft-white { background: #fafbfc; }
+    hr.soft-hr { opacity: 0.3; margin: 3rem 0; }
+
+    /* ── fade-up ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .display-4 { font-size: 2.4rem; }
+      .section-title { font-size: 1.8rem; }
+      .blog-content { font-size: 1rem; }
+      .blog-content h3 { font-size: 1.4rem; }
+      .stat-number { font-size: 2.2rem; }
+      .highlight-box { padding: 1.5rem; }
+      .results-table { font-size: 0.85rem; }
+      .results-table th, .results-table td { padding: 0.5rem 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar navbar-expand-md sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">Mahdieh Kazemi</a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+            aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="bi bi-list" style="font-size: 1.6rem;"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-md-center">
+        <li class="nav-item"><a class="nav-link" href="../index.html#projects">Projects</a></li>
+        <li class="nav-item"><a class="nav-link" href="../index.html#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="../uses.html">Uses</a></li>
+        <li class="nav-item"><a class="nav-link" href="../now.html">Now</a></li>
+        <li class="nav-item"><a class="nav-link" href="../index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="py-5">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7">
+        <div class="mb-3 d-flex flex-wrap align-items-center gap-2">
+          <span class="badge-soft" style="background: #eaeef3;">Engineering Blog</span>
+          <span class="badge-soft" style="background: #eaeef3;"><i class="bi bi-clock me-1"></i>10 min read</span>
+          <span class="badge-soft" style="background: #eaeef3;"><i class="bi bi-calendar3 me-1"></i>July 19, 2026</span>
+        </div>
+        <h1 class="display-4 fw-bold mb-3" style="letter-spacing: -0.03em;">Behind the Pima Diabetes Predictor</h1>
+        <p class="fs-4 fw-normal text-muted-soft mb-3" style="max-width: 90%;">From dirty data to a reliable classifier — the engineering story behind building a diabetes prediction model with XGBoost.</p>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="../coming_soon.html" class="btn btn-dark"><i class="bi bi-arrow-left me-2"></i>Case Study</a>
+          <a href="https://github.com/mahkzmi/Pima-Diabetes-Predictor" class="btn btn-outline-secondary"><i class="bi bi-github me-2"></i>GitHub</a>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="cover-placeholder">
+          <img src="../assets/images/writing/diabetes-cover.png" alt="Pima Diabetes Predictor cover" style="width:100%; border-radius:32px;" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BLOG CONTENT ===== -->
+<section class="py-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="blog-content">
+
+          <!-- 1. Why I built it -->
+          <p class="lead">I didn't set out to build a diabetes prediction model. I set out to understand <strong>why some machine learning projects succeed and others fail</strong> — and the answer, I found, lies in the data.</p>
+
+          <p>The Pima Indians Diabetes Dataset is a classic. It's been used in hundreds of tutorials and research papers. But it's also a dataset full of traps: missing values disguised as zeros, imbalanced classes, and features that need careful handling. I wanted to see if I could build a model that actually works — one that could be deployed, trusted, and explained.</p>
+
+          <p>This is the story of that journey. The mistakes I made, the lessons I learned, and the model I built.</p>
+
+          <!-- 2. The data problem -->
+          <h3>The data problem: zeros that mean nothing</h3>
+          <p>I loaded the dataset, ran <code>info()</code>, and everything looked clean. No missing values. Perfect, right? Wrong.</p>
+          <p>In this dataset, a value of <strong>0</strong> in columns like <code>Glucose</code>, <code>BloodPressure</code>, or <code>BMI</code> doesn't mean zero — it means <strong>"data not recorded."</strong> These were missing values in disguise. And if I treated them as real values, my model would learn nonsense.</p>
+
+          <div class="code-block">
+            <code>
+              <span class="comment"># Looking for zeros that should be NaN</span>
+              cols_with_zero = ['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']<br>
+              <span class="keyword">for</span> col <span class="keyword">in</span> cols_with_zero:<br>
+              &nbsp;&nbsp;  zero_count = (data[col] == 0).sum()<br>
+              &nbsp;&nbsp;  <span class="keyword">print</span>(f<span class="string">"{col}: {zero_count} zeros"</span>)<br><br>
+              <span class="comment"># Output:</span><br>
+              <span class="comment"># Glucose: 5 zeros</span><br>
+              <span class="comment"># BloodPressure: 35 zeros</span><br>
+              <span class="comment"># SkinThickness: 227 zeros</span><br>
+              <span class="comment"># Insulin: 374 zeros</span><br>
+              <span class="comment"># BMI: 11 zeros</span>
+            </code>
+          </div>
+
+          <p>Over 600 missing values hidden as zeros. If I hadn't caught this, my model would have been a disaster.</p>
+
+          <div class="highlight-box">
+            <span class="icon-lg"><i class="bi bi-exclamation-triangle"></i></span>
+            <h5 style="font-weight: 600;">Lesson learned</h5>
+            <p class="mb-0" style="font-size: 1.05rem; color: #2a3a4a;">Always, always understand the semantics of your data. Zero is not always zero. Missing values are not always null.</p>
+          </div>
+
+          <!-- 3. The class imbalance problem -->
+          <h3>The class imbalance problem</h3>
+          <p>I looked at the target variable and found:</p>
+          <ul>
+            <li><strong>500 healthy patients (65%)</strong></li>
+            <li><strong>268 patients with diabetes (35%)</strong></li>
+          </ul>
+          <p>This isn't extreme, but it's enough to cause problems. A naive model that always predicts "healthy" would be 65% accurate without learning anything. I needed a metric that reflected the imbalance.</p>
+
+          <p>That's why I used <strong>F1-Score</strong> instead of accuracy. F1-Score balances precision and recall, making it much more robust for imbalanced datasets.</p>
+
+          <!-- 4. Results -->
+          <h3>Results: what I actually achieved</h3>
+          <p>After cleaning the data, imputing missing values with the median, and tuning the XGBoost model, I got the following results on the test set:</p>
+
+          <div class="row g-3 my-4">
+            <div class="col-6 col-md-3">
+              <div class="stat-card">
+                <div class="stat-number">73%</div>
+                <div class="stat-label">Accuracy</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="stat-card">
+                <div class="stat-number">63%</div>
+                <div class="stat-label">F1-Score</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="stat-card">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Features used</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="stat-card">
+                <div class="stat-number">31%</div>
+                <div class="stat-label">Predicted probability</div>
+              </div>
+            </div>
+          </div>
+
+          <p>Here's the detailed performance breakdown:</p>
+
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Precision</th>
+                <th>Recall</th>
+                <th>F1-Score</th>
+                <th>Support</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Healthy (0)</strong></td>
+                <td>0.80</td>
+                <td>0.77</td>
+                <td>0.78</td>
+                <td>99</td>
+              </tr>
+              <tr>
+                <td><strong>Diabetes (1)</strong></td>
+                <td>0.61</td>
+                <td>0.65</td>
+                <td>0.63</td>
+                <td>55</td>
+              </tr>
+              <tr class="highlight-row">
+                <td><strong>Average</strong></td>
+                <td>0.73</td>
+                <td>0.73</td>
+                <td>0.73</td>
+                <td>154</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p>The confusion matrix tells the full story:</p>
+
+          <div class="code-block" style="text-align: center;">
+            <code>
+              [[76 &nbsp; 23]<br>
+              &nbsp;[19 &nbsp; 36]]
+            </code>
+          </div>
+
+          <ul>
+            <li><strong>76</strong> true negatives (correctly predicted healthy)</li>
+            <li><strong>36</strong> true positives (correctly predicted diabetes)</li>
+            <li><strong>23</strong> false positives (predicted diabetes, actually healthy)</li>
+            <li><strong>19</strong> false negatives (predicted healthy, actually diabetic)</li>
+          </ul>
+
+          <p>The model is conservative — it rarely misses a diabetic patient (only 19 false negatives), but it sometimes flags healthy patients as diabetic (23 false positives). For a medical screening tool, that's the right trade-off.</p>
+
+          <!-- 5. Pipeline architecture -->
+          <h3>Pipeline architecture: how I built it</h3>
+          <p>I used scikit-learn's <code>Pipeline</code> class to chain all preprocessing and modeling steps into a single, reusable object:</p>
+
+          <div class="code-block">
+            <code>
+              <span class="keyword">from</span> sklearn.pipeline <span class="keyword">import</span> Pipeline<br>
+              <span class="keyword">from</span> sklearn.impute <span class="keyword">import</span> SimpleImputer<br>
+              <span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler<br>
+              <span class="keyword">from</span> xgboost <span class="keyword">import</span> XGBClassifier<br><br>
+              model = Pipeline([<br>
+              &nbsp;&nbsp; (<span class="string">'imputer'</span>, SimpleImputer(strategy=<span class="string">'median'</span>)),<br>
+              &nbsp;&nbsp; (<span class="string">'scaler'</span>, StandardScaler()),<br>
+              &nbsp;&nbsp; (<span class="string">'classifier'</span>, XGBClassifier(<br>
+              &nbsp;&nbsp;&nbsp;&nbsp; n_estimators=100,<br>
+              &nbsp;&nbsp;&nbsp;&nbsp; learning_rate=0.1,<br>
+              &nbsp;&nbsp;&nbsp;&nbsp; max_depth=3,<br>
+              &nbsp;&nbsp;&nbsp;&nbsp; random_state=42,<br>
+              &nbsp;&nbsp;&nbsp;&nbsp; eval_metric=<span class="string">'logloss'</span><br>
+              &nbsp;&nbsp; ))<br>
+              ])
+            </code>
+          </div>
+
+          <p>This pipeline handles:</p>
+          <ul>
+            <li><strong>Imputation</strong> — replaces missing values with the median</li>
+            <li><strong>Scaling</strong> — standardizes features to mean 0, std 1</li>
+            <li><strong>Classification</strong> — XGBoost with early stopping</li>
+          </ul>
+
+          <p>I optimized the hyperparameters using <code>GridSearchCV</code> with 5-fold cross-validation, scoring on F1. The best parameters were:</p>
+
+          <ul>
+            <li><strong>n_estimators</strong>: 100</li>
+            <li><strong>learning_rate</strong>: 0.1</li>
+            <li><strong>max_depth</strong>: 3</li>
+          </ul>
+
+          <!-- 6. Mistakes I made -->
+          <h3>Mistakes I made</h3>
+          <div class="row g-4 my-4">
+            <div class="col-md-6">
+              <div class="card card-soft h-100" style="background: #fafbfc;">
+                <i class="bi bi-exclamation-triangle fs-3 mb-2" style="color: #d73a49;"></i>
+                <h6>Ignoring the zeros</h6>
+                <p class="text-muted-soft small mb-0">I initially treated zeros as real values. My model performed terribly. It took me an hour to realize the zeros were actually missing values.</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card card-soft h-100" style="background: #fafbfc;">
+                <i class="bi bi-exclamation-triangle fs-3 mb-2" style="color: #d73a49;"></i>
+                <h6>Using accuracy as the metric</h6>
+                <p class="text-muted-soft small mb-0">I kept optimizing for accuracy, but the model was ignoring the minority class. Switching to F1-Score changed everything.</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card card-soft h-100" style="background: #fafbfc;">
+                <i class="bi bi-exclamation-triangle fs-3 mb-2" style="color: #d73a49;"></i>
+                <h6>Overfitting the training data</h6>
+                <p class="text-muted-soft small mb-0">My first model had a depth of 10 and 500 estimators. It was a perfect learner — on the training data. Validation performance was poor.</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card card-soft h-100" style="background: #fafbfc;">
+                <i class="bi bi-exclamation-triangle fs-3 mb-2" style="color: #d73a49;"></i>
+                <h6>Not documenting the pipeline</h6>
+                <p class="text-muted-soft small mb-0">I had to refactor everything when I came back to it. Now I document every decision, even the small ones.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7. Lessons learned -->
+          <h3>Lessons learned</h3>
+          <div class="card card-soft p-4 p-md-5 soft-shadow my-4" style="border-radius: 28px;">
+            <div class="d-flex gap-3 align-items-start mb-4">
+              <span class="badge-soft-dark">1</span>
+              <div><h6 class="mb-1">Technical: Data quality is everything</h6><p class="text-muted-soft small">A sophisticated model with bad data will always lose to a simple model with good data.</p></div>
+            </div>
+            <div class="d-flex gap-3 align-items-start mb-4">
+              <span class="badge-soft-dark">2</span>
+              <div><h6 class="mb-1">Product: Metrics matter</h6><p class="text-muted-soft small">Choose your evaluation metric based on the business problem, not convenience. F1-Score over accuracy for imbalanced data.</p></div>
+            </div>
+            <div class="d-flex gap-3 align-items-start mb-0">
+              <span class="badge-soft-dark">3</span>
+              <div><h6 class="mb-1">Process: Document your reasoning</h6><p class="text-muted-soft small">Why did you choose median imputation? Why XGBoost? Write it down. Future you will thank you.</p></div>
+            </div>
+          </div>
+
+          <!-- 8. What's next -->
+          <h3>What's next</h3>
+          <p>This model is just the beginning. I'm planning several improvements:</p>
+          <ul>
+            <li><strong>Feature engineering</strong> — adding interaction features and domain-specific transformations</li>
+            <li><strong>Model interpretability</strong> — using SHAP to explain predictions to end users</li>
+            <li><strong>API deployment</strong> — wrapping the model in a FastAPI service for real-time predictions</li>
+            <li><strong>Dashboard</strong> — building a simple interface where doctors can input patient data and get results</li>
+            <li><strong>Data augmentation</strong> — using SMOTE to handle the class imbalance more effectively</li>
+          </ul>
+
+          <!-- 9. Final thoughts -->
+          <h3>Final thoughts</h3>
+          <p>This project reminded me of something I often forget: <strong>machine learning is 80% data, 15% experimentation, and 5% algorithm</strong>.</p>
+          <p>The algorithm matters, yes. But the real work is in understanding your data, cleaning it, and making sure your model is solving the right problem.</p>
+          <p>If you're working on a similar project — whether it's diabetes, customer churn, or something else entirely — I'd love to hear about it. <a href="../index.html#contact" style="color: #1e1e1e; font-weight: 500;">Reach out</a> anytime.</p>
+
+          <hr class="soft-hr" />
+
+          <div class="text-center py-3">
+            <p style="font-size: 1.05rem; color: #3a4a5a;">
+              <i class="bi bi-arrow-left me-2"></i> Read the <a href="diabetes-case-study.html" style="color: #1e1e1e; font-weight: 500;">full case study</a> for a complete project overview.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RELATED / CTA ===== -->
+<section class="py-5 bg-soft-white">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card p-4 p-md-5 text-center" style="border-radius: 40px; border: 1px solid #edf0f5;">
+          <h3 class="fw-semibold mb-2">Explore the full case study</h3>
+          <p class="text-muted-soft" style="max-width: 500px; margin: 0 auto 1.5rem;">Technical details, architecture decisions, and the complete development process.</p>
+          <div class="d-flex flex-wrap gap-3 justify-content-center">
+            <a href="diabetes-case-study.html" class="btn btn-dark"><i class="bi bi-book me-2"></i>Read Case Study</a>
+            <a href="https://github.com/mahkzmi/Pima-Diabetes-Predictor" class="btn btn-outline-secondary"><i class="bi bi-github me-2"></i>View on GitHub</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+        <span class="text-muted-soft">© 2026 Mahdieh Kazemi</span>
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <a href="https://github.com/mahkzmi/Pima-Diabetes-Predictor"><i class="bi bi-github"></i></a>
+        <a href="#"><i class="bi bi-linkedin"></i></a>
+        <a href="#"><i class="bi bi-twitter-x"></i></a>
+        <a href="#"><i class="bi bi-envelope"></i></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ===== FADE-UP ON SCROLL ===== -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    document.querySelectorAll('.card, .highlight-box, .stat-card, .cover-placeholder, .pipeline-step, .cta-card').forEach(el => {
+      if (!el.classList.contains('fade-up')) {
+        el.classList.add('fade-up');
+        observer.observe(el);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
